@@ -12,7 +12,7 @@ export function buildMerkleRoot(leaves: Uint8Array[]): Uint8Array {
 		for (let i = 0; i < data.length; i += 2) {
 			const left = data[i];
 			const right = data[i + 1] ?? data[i];
-			next.push(bytesToHex(sha256(left + right)));
+			next.push(bytesToHex(sha256(new TextEncoder().encode(left + right))));
 		}
 		return next;
 	}

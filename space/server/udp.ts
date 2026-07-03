@@ -1,5 +1,5 @@
+import { broadcast, clientKey } from "@polka/utils/udp/broadcast.ts";
 import { SpacePacketSchema } from "../types/packet.ts";
-import { broadcast, clientKey } from "./broadcast.ts";
 
 export async function startServer(port: number): Promise<void> {
 	const conn = Deno.listenDatagram({

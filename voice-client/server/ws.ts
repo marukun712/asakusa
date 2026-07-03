@@ -1,4 +1,5 @@
 // https://github.com/nicktindall/opusscript
+import { Buffer } from "node:buffer";
 import OpusScript from "opusscript";
 import { computeFingerprint, generateAvatar } from "./fingerprint.ts";
 import {

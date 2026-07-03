@@ -1,0 +1,8 @@
+{
+	"name": "@polka/utils",
+	"version": "0.1.0",
+	"exports": {
+		"./udp/broadcast.ts": "./udp/broadcast.ts",
+		"./noise/frame.ts": "./noise/frame.ts"
+	}
+}
