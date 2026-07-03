@@ -1,10 +1,12 @@
 // https://github.com/nicktindall/opusscript
+// https://github.com/audiojs/pcm-convert
 import { Buffer } from "node:buffer";
 import {
 	computeFingerprint,
 	generateAvatar,
 } from "@polka/utils/crypto/fingerprint.ts";
 import OpusScript from "opusscript";
+import convert from "pcm-convert";
 import {
 	buildPacket,
 	createSession,
@@ -68,13 +70,7 @@ export function handleWs(ws: WebSocket): void {
 			encoder
 		) {
 			const float32 = new Float32Array(event.data);
-			const int16 = new Int16Array(float32.length);
-			for (let i = 0; i < float32.length; i++) {
-				int16[i] = Math.max(
-					-32768,
-					Math.min(32767, Math.round(float32[i] * 32768)),
-				);
-			}
+			const int16 = convert(float32, "int16") as Int16Array;
 			try {
 				const encoded = encoder.encode(Buffer.from(int16.buffer), 480);
 				await udpConn.send(buildPacket(session, encoded), {
@@ -144,8 +140,7 @@ async function receiveLoop(
 					raw.byteOffset,
 					raw.byteLength / 2,
 				);
-				const float32 = new Float32Array(pcm16.length);
-				for (let i = 0; i < pcm16.length; i++) float32[i] = pcm16[i] / 32768;
+				const float32 = convert(pcm16, "float32") as Float32Array;
 				const prefix = fingerprintPrefix(fingerprint);
 				const out = new Uint8Array(4 + float32.byteLength);
 				out.set(prefix, 0);

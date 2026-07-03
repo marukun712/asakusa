@@ -11,6 +11,7 @@
 		"@polka/types": "@polka/types",
 		"@polka/utils": "@polka/utils",
 		"@noble/curves": "jsr:@noble/curves@^2.2.0",
-		"opusscript": "npm:opusscript@^0.1.1"
+		"opusscript": "npm:opusscript@^0.1.1",
+		"pcm-convert": "npm:pcm-convert@^3.1.1"
 	}
 }

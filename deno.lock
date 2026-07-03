@@ -20,6 +20,8 @@
     "npm:noise-handshake@^4.2.0": "4.2.0",
     "npm:opusscript@*": "0.1.1",
     "npm:opusscript@~0.1.1": "0.1.1",
+    "npm:pcm-convert@*": "3.1.1",
+    "npm:pcm-convert@^3.1.1": "3.1.1",
     "npm:zod@*": "4.4.3",
     "npm:zod@^4.4.3": "4.4.3"
   },
@@ -350,6 +352,9 @@
     "opusscript@0.1.1": {
       "integrity": "sha512-mL0fZZOUnXdZ78woRXp18lApwpp0lF5tozJOD1Wut0dgrA9WuQTgSels/CSmFleaAZrJi/nci5KOVtbuxeWoQA=="
     },
+    "pcm-convert@3.1.1": {
+      "integrity": "sha512-nlpgtFCUXR08NXdDiXCV6yCHQy4WTDF8t5v5unnTTHB/F7Px+h0t8AdkhS9gtHau72V9VpEiCx7FbyOX6PcSow=="
+    },
     "require-addon@1.2.0": {
       "integrity": "sha512-VNPDZlYgIYQwWp9jMTzljx+k0ZtatKlcvOhktZ/anNPI3dQ9NXk7cq2U4iJ1wd9IrytRnYhyEocFWbkdPb+MYA==",
       "dependencies": [
@@ -482,7 +487,8 @@
       "voice-client": {
         "dependencies": [
           "jsr:@noble/curves@^2.2.0",
-          "npm:opusscript@~0.1.1"
+          "npm:opusscript@~0.1.1",
+          "npm:pcm-convert@^3.1.1"
         ]
       }
     }
