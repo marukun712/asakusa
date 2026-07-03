@@ -1,5 +1,5 @@
 {
-	"name": "@polka/docs",
+	"name": "@polka/pod",
 	"version": "0.1.0",
 	"exports": {
 		".": "./mod.ts"

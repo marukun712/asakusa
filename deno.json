@@ -1,6 +1,6 @@
 {
 	"tasks": {
-		"docs": "deno run --allow-net --allow-read --allow-env docs/mod.ts",
+		"pod": "deno run --allow-net --allow-read --allow-env pod/mod.ts",
 		"relay": "deno run --allow-net --allow-env relay/mod.ts",
 		"space": "deno run --allow-net --allow-env space/mod.ts",
 		"voice-client": "deno run --allow-net --allow-read --allow-env voice-client/mod.ts",
@@ -12,7 +12,7 @@
 		"types",
 		"utils",
 		"voice-client",
-		"docs",
+		"pod",
 		"relay",
 		"space",
 		"tools",
