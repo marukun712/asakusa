@@ -10,11 +10,9 @@ function readPassphrase(): string {
 	return new TextDecoder().decode(buf.subarray(0, n)).trim();
 }
 
-const docsDir = Deno.args[0];
-if (!docsDir) {
-	console.error("usage: builder.ts <docs-dir>");
-	Deno.exit(1);
-}
+const home = Deno.env.get("HOME") ?? "";
+const docsRoot = Deno.env.get("DOCS_ROOT") ?? `${home}/.polka/pod/`;
+const docsDir = Deno.args[0] ?? docsRoot;
 
 const passphrase = readPassphrase();
 const pair = await loadContent(passphrase);
