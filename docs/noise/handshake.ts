@@ -9,46 +9,54 @@ export interface Channel {
 
 const MAX_NOISE_MSG = 65535;
 
-async function readFramed(conn: Deno.Conn): Promise<Uint8Array> {
-	const lenBuf = new Uint8Array(4);
-	let offset = 0;
-	while (offset < 4) {
-		const n = await conn.read(lenBuf.subarray(offset));
-		if (n === null) throw new Error("connection closed");
-		offset += n;
+async function readExact(
+	reader: ReadableStreamBYOBReader,
+	n: number,
+): Promise<Uint8Array> {
+	const result = new Uint8Array(n);
+	let view = new Uint8Array(result.buffer, 0, n);
+	while (view.byteLength > 0) {
+		const { value, done } = await reader.read(view);
+		if (done) throw new Error("connection closed");
+		view = new Uint8Array(result.buffer, value.byteOffset + value.byteLength);
 	}
-	const len = new DataView(lenBuf.buffer).getUint32(0, false);
-	if (len > MAX_NOISE_MSG) throw new Error("message too large");
-
-	const data = new Uint8Array(len);
-	offset = 0;
-	while (offset < len) {
-		const n = await conn.read(data.subarray(offset));
-		if (n === null) throw new Error("connection closed");
-		offset += n;
-	}
-	return data;
+	return result;
 }
 
-async function writeFramed(conn: Deno.Conn, data: Uint8Array): Promise<void> {
+async function readFramed(
+	reader: ReadableStreamBYOBReader,
+): Promise<Uint8Array> {
+	const lenBuf = await readExact(reader, 4);
+	const len = new DataView(lenBuf.buffer).getUint32(0, false);
+	if (len > MAX_NOISE_MSG) throw new Error("message too large");
+	return readExact(reader, len);
+}
+
+async function writeFramed(
+	writer: WritableStreamDefaultWriter<Uint8Array>,
+	data: Uint8Array,
+): Promise<void> {
 	const lenBuf = new Uint8Array(4);
 	new DataView(lenBuf.buffer).setUint32(0, data.length, false);
-	await conn.write(lenBuf);
-	await conn.write(data);
+	await writer.write(lenBuf);
+	await writer.write(data);
 }
 
 export async function serverHandshake(
 	conn: Deno.Conn,
 	keyPair: { publicKey: Uint8Array; secretKey: Uint8Array },
 ): Promise<Channel> {
+	const reader = conn.readable.getReader({ mode: "byob" });
+	const writer = conn.writable.getWriter();
+
 	const noise = new Noise("NX", false, keyPair);
 	noise.initialise(new Uint8Array(0));
 
-	const msg1 = await readFramed(conn);
+	const msg1 = await readFramed(reader);
 	noise.recv(msg1);
 
 	const msg2 = noise.send();
-	await writeFramed(conn, msg2);
+	await writeFramed(writer, msg2);
 
 	if (!noise.complete) throw new Error("handshake incomplete");
 
@@ -57,10 +65,10 @@ export async function serverHandshake(
 
 	return {
 		async send(data: Uint8Array): Promise<void> {
-			await writeFramed(conn, sendCipher.encrypt(data));
+			await writeFramed(writer, sendCipher.encrypt(data));
 		},
 		async recv(): Promise<Uint8Array> {
-			const encrypted = await readFramed(conn);
+			const encrypted = await readFramed(reader);
 			return recvCipher.decrypt(encrypted);
 		},
 	};

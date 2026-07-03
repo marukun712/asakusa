@@ -1,25 +1,27 @@
 // https://github.com/paulmillr/noble-hashes
 import { sha256 } from "npm:@noble/hashes/sha256";
+import { bytesToHex, hexToBytes } from "npm:@noble/hashes/utils";
 
 export function buildMerkleRoot(leaves: Uint8Array[]): Uint8Array {
 	if (leaves.length === 0) return new Uint8Array(32);
 
-	let level = leaves.map((leaf) => sha256(leaf));
+	let tree: string[] = leaves.map((leaf) => bytesToHex(leaf));
 
-	while (level.length > 1) {
-		const next: Uint8Array[] = [];
-		for (let i = 0; i < level.length; i += 2) {
-			const left = level[i];
-			const right = level[i + 1] ?? level[i];
-			const combined = new Uint8Array(64);
-			combined.set(left, 0);
-			combined.set(right, 32);
-			next.push(sha256(combined));
+	function concat(data: string[]): string[] {
+		const next: string[] = [];
+		for (let i = 0; i < data.length; i += 2) {
+			const left = data[i];
+			const right = data[i + 1] ?? data[i];
+			next.push(bytesToHex(sha256(left + right)));
 		}
-		level = next;
+		return next;
 	}
 
-	return level[0];
+	while (tree.length !== 1) {
+		tree = concat(tree);
+	}
+
+	return hexToBytes(tree[0]);
 }
 
 export async function collectFileHashes(dir: string): Promise<Uint8Array[]> {
