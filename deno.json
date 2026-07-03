@@ -1,0 +1,6 @@
+{
+	"workspace": ["docs", "relay", "space", "tools"],
+	"imports": {
+		"@biomejs/biome": "npm:@biomejs/biome@^2.5.2"
+	}
+}
