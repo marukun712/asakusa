@@ -1,5 +1,5 @@
 // https://github.com/paulmillr/noble-curves
-import { ed25519 } from "npm:@noble/curves/ed25519";
+import { ed25519 } from "@noble/curves/ed25519.js";
 
 export function sign(rootHash: Uint8Array, secretKey: Uint8Array): Uint8Array {
 	return ed25519.sign(rootHash, secretKey);

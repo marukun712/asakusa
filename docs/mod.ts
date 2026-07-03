@@ -1,6 +1,7 @@
+import { DOCS_PORT } from "../ports.ts";
 import { startServer } from "./server/tcp.ts";
 
-const port = parseInt(Deno.env.get("DOCS_PORT") ?? "7070", 10);
+const port = parseInt(Deno.env.get("DOCS_PORT") ?? String(DOCS_PORT), 10);
 const docsRoot = Deno.env.get("DOCS_ROOT") ?? "./data";
 
 const home = Deno.env.get("HOME") ?? "";

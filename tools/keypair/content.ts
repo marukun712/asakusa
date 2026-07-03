@@ -1,7 +1,7 @@
 // https://github.com/paulmillr/noble-curves
-import { ed25519 } from "npm:@noble/curves/ed25519";
+import { ed25519 } from "@noble/curves/ed25519.js";
 // https://github.com/FiloSottile/typage
-import { Decrypter, Encrypter } from "npm:age-encryption";
+import { Decrypter, Encrypter } from "age-encryption";
 
 export interface ContentKeyPair {
 	secretKey: Uint8Array;
@@ -9,7 +9,7 @@ export interface ContentKeyPair {
 }
 
 export function generate(): ContentKeyPair {
-	const secretKey = ed25519.utils.randomPrivateKey();
+	const secretKey = ed25519.utils.randomSecretKey();
 	const publicKey = ed25519.getPublicKey(secretKey);
 	return { secretKey, publicKey };
 }

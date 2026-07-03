@@ -1,4 +1,7 @@
 {
 	"name": "@polka/space",
-	"version": "0.1.0"
+	"version": "0.1.0",
+	"imports": {
+		"zod": "npm:zod@^4.4.3"
+	}
 }

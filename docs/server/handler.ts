@@ -1,4 +1,4 @@
-import { z } from "npm:zod";
+import { z } from "zod";
 import {
 	badRequest,
 	notFound,
@@ -10,7 +10,7 @@ import type { Channel } from "../noise/handshake.ts";
 const RequestSchema = z
 	.string()
 	.transform((s) => s.replace(/\r\n$/, ""))
-	.pipe(z.string().max(1024).url());
+	.pipe(z.url().max(1024));
 
 export async function handleRequest(
 	docsRoot: string,

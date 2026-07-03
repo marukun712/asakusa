@@ -1,0 +1,12 @@
+{
+	"name": "@polka/tui",
+	"version": "0.1.0",
+	"tasks": {
+		"start": "deno run --allow-net --allow-ffi --allow-read --allow-env mod.ts"
+	},
+	"imports": {
+		"@noble/curves": "jsr:@noble/curves@^2.2.0",
+		"@opentui/core": "npm:@opentui/core@^0.4.2",
+		"noise-handshake": "npm:noise-handshake@^4.2.0"
+	}
+}

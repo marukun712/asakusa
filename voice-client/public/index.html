@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Polka Voice</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <style>
+    #my-identity {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="container">
+    <nav>
+      <ul>
+        <li><strong>Polka Voice</strong></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <form id="space-form">
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <input type="text" id="space-host" placeholder="hostname" style="flex:2;min-width:8rem">
+        <input type="number" id="space-port" placeholder="8182" value="8182" style="flex:1;min-width:5rem">
+        <input type="text" id="space-handle" placeholder="Handle" style="flex:2;min-width:8rem">
+        <button type="submit" id="space-join">Join</button>
+        <button type="button" id="space-leave" disabled>Leave</button>
+      </div>
+    </form>
+    <div id="my-identity" hidden></div>
+    <div id="participants"></div>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>

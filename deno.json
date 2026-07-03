@@ -1,5 +1,5 @@
 {
-	"workspace": ["docs", "relay", "space", "tools"],
+	"workspace": ["voice-client", "docs", "relay", "space", "tools", "tui"],
 	"imports": {
 		"@biomejs/biome": "npm:@biomejs/biome@^2.5.2"
 	}

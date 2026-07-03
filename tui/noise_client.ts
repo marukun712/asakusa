@@ -2,11 +2,6 @@
 import Noise from "noise-handshake";
 import Cipher from "noise-handshake/cipher";
 
-export interface Channel {
-	send(data: Uint8Array): Promise<void>;
-	recv(): Promise<Uint8Array>;
-}
-
 const MAX_NOISE_MSG = 65535;
 
 async function readExact(
@@ -42,21 +37,26 @@ async function writeFramed(
 	await writer.write(data);
 }
 
-export async function serverHandshake(
-	conn: Deno.Conn,
-	keyPair: { publicKey: Uint8Array; secretKey: Uint8Array },
-): Promise<Channel> {
+export interface ClientChannel {
+	send(data: Uint8Array): Promise<void>;
+	recv(): Promise<Uint8Array>;
+	serverPublicKey: Uint8Array;
+}
+
+export async function clientHandshake(
+	conn: Deno.TcpConn,
+): Promise<ClientChannel> {
 	const reader = conn.readable.getReader({ mode: "byob" });
 	const writer = conn.writable.getWriter();
 
-	const noise = new Noise("NX", false, keyPair);
+	const noise = new Noise("NX", true);
 	noise.initialise(new Uint8Array(0));
 
-	const msg1 = await readFramed(reader);
-	noise.recv(msg1);
+	const msg1 = noise.send();
+	await writeFramed(writer, msg1);
 
-	const msg2 = noise.send();
-	await writeFramed(writer, msg2);
+	const msg2 = await readFramed(reader);
+	noise.recv(msg2);
 
 	if (!noise.complete) throw new Error("handshake incomplete");
 
@@ -64,6 +64,7 @@ export async function serverHandshake(
 	const recvCipher = new Cipher(noise.rx);
 
 	return {
+		serverPublicKey: noise.rs,
 		async send(data: Uint8Array): Promise<void> {
 			await writeFramed(writer, sendCipher.encrypt(data));
 		},

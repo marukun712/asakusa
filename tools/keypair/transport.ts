@@ -1,5 +1,5 @@
 // https://github.com/paulmillr/noble-curves
-import { x25519 } from "npm:@noble/curves/ed25519";
+import { x25519 } from "@noble/curves/ed25519.js";
 
 export interface TransportKeyPair {
 	secretKey: Uint8Array;
@@ -7,7 +7,7 @@ export interface TransportKeyPair {
 }
 
 export function generate(): TransportKeyPair {
-	const secretKey = x25519.utils.randomPrivateKey();
+	const secretKey = x25519.utils.randomSecretKey();
 	const publicKey = x25519.getPublicKey(secretKey);
 	return { secretKey, publicKey };
 }

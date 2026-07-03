@@ -1,4 +1,9 @@
 {
 	"name": "@polka/tools",
-	"version": "0.1.0"
+	"version": "0.1.0",
+	"imports": {
+		"@noble/curves": "jsr:@noble/curves@^2.2.0",
+		"@noble/hashes": "jsr:@noble/hashes@^2.2.0",
+		"age-encryption": "npm:age-encryption@^0.3.0"
+	}
 }

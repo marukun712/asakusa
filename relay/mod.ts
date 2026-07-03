@@ -1,4 +1,5 @@
+import { RELAY_PORT } from "../ports.ts";
 import { startServer } from "./server/udp.ts";
 
-const port = parseInt(Deno.env.get("RELAY_PORT") ?? "7071", 10);
+const port = parseInt(Deno.env.get("RELAY_PORT") ?? String(RELAY_PORT), 10);
 await startServer(port);

@@ -1,3 +1,4 @@
+import { SpacePacketSchema } from "../types/packet.ts";
 import { broadcast, clientKey } from "./broadcast.ts";
 
 export async function startServer(port: number): Promise<void> {
@@ -12,6 +13,10 @@ export async function startServer(port: number): Promise<void> {
 	for await (const [data, addr] of conn) {
 		const sender = addr as Deno.NetAddr;
 		clients.set(clientKey(sender), sender);
+
+		const result = SpacePacketSchema.safeParse(data);
+		if (!result.success) continue;
+
 		broadcast(conn, clients, data, sender);
 	}
 }

@@ -1,6 +1,6 @@
 // https://github.com/paulmillr/noble-hashes
-import { sha256 } from "npm:@noble/hashes/sha256";
-import { bytesToHex, hexToBytes } from "npm:@noble/hashes/utils";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
 
 export function buildMerkleRoot(leaves: Uint8Array[]): Uint8Array {
 	if (leaves.length === 0) return new Uint8Array(32);
