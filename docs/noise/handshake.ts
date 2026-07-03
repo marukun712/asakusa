@@ -7,6 +7,8 @@ export interface Channel {
 	recv(): Promise<Uint8Array>;
 }
 
+const MAX_NOISE_MSG = 65535;
+
 async function readFramed(conn: Deno.Conn): Promise<Uint8Array> {
 	const lenBuf = new Uint8Array(4);
 	let offset = 0;
@@ -16,6 +18,7 @@ async function readFramed(conn: Deno.Conn): Promise<Uint8Array> {
 		offset += n;
 	}
 	const len = new DataView(lenBuf.buffer).getUint32(0, false);
+	if (len > MAX_NOISE_MSG) throw new Error("message too large");
 
 	const data = new Uint8Array(len);
 	offset = 0;

@@ -9,9 +9,8 @@ import type { Channel } from "../noise/handshake.ts";
 
 const RequestSchema = z
 	.string()
-	.max(1024)
 	.transform((s) => s.replace(/\r\n$/, ""))
-	.pipe(z.string().url());
+	.pipe(z.string().max(1024).url());
 
 export async function handleRequest(
 	docsRoot: string,
