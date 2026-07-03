@@ -453,16 +453,6 @@
           "npm:zod@^4.4.3"
         ]
       },
-      "relay": {
-        "dependencies": [
-          "npm:zod@^4.4.3"
-        ]
-      },
-      "space": {
-        "dependencies": [
-          "npm:zod@^4.4.3"
-        ]
-      },
       "tools": {
         "dependencies": [
           "jsr:@noble/curves@^2.2.0",
@@ -477,12 +467,21 @@
           "npm:noise-handshake@^4.2.0"
         ]
       },
+      "types": {
+        "dependencies": [
+          "npm:zod@^4.4.3"
+        ]
+      },
+      "utils": {
+        "dependencies": [
+          "jsr:@noble/hashes@^2.2.0",
+          "npm:@dicebear/core@^10.3.0",
+          "npm:@dicebear/pixel-art@^9.4.2"
+        ]
+      },
       "voice-client": {
         "dependencies": [
           "jsr:@noble/curves@^2.2.0",
-          "jsr:@noble/hashes@^2.2.0",
-          "npm:@dicebear/core@^10.3.0",
-          "npm:@dicebear/pixel-art@^9.4.2",
           "npm:opusscript@~0.1.1"
         ]
       }

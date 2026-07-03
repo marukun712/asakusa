@@ -1,4 +1,4 @@
-import { DOCS_PORT } from "../ports.ts";
+import { DOCS_PORT } from "@polka/types/ports.ts";
 import { startServer } from "./server/tcp.ts";
 
 const port = parseInt(Deno.env.get("DOCS_PORT") ?? String(DOCS_PORT), 10);

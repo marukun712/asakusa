@@ -1,9 +1,9 @@
 // https://github.com/paulmillr/noble-curves
 import { ed25519 } from "@noble/curves/ed25519.js";
-import type { SpacePacketData } from "../../space/types/packet.ts";
+import type { SpacePacketData } from "@polka/types/packet.ts";
 
-export type { SpacePacketData } from "../../space/types/packet.ts";
-export { parseSpacePacket as parsePacket } from "../../space/types/packet.ts";
+export type { SpacePacketData } from "@polka/types/packet.ts";
+export { parseSpacePacket as parsePacket } from "@polka/types/packet.ts";
 
 export interface SpaceSession {
 	publicKey: Uint8Array;

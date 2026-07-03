@@ -1,8 +1,14 @@
 {
 	"name": "@polka/utils",
 	"version": "0.1.0",
+	"imports": {
+		"@dicebear/core": "npm:@dicebear/core@^10.3.0",
+		"@dicebear/pixel-art": "npm:@dicebear/pixel-art@^9.4.2",
+		"@noble/hashes": "jsr:@noble/hashes@^2.2.0"
+	},
 	"exports": {
 		"./udp/broadcast.ts": "./udp/broadcast.ts",
-		"./noise/frame.ts": "./noise/frame.ts"
+		"./noise/frame.ts": "./noise/frame.ts",
+		"./crypto/fingerprint.ts": "./crypto/fingerprint.ts"
 	}
 }

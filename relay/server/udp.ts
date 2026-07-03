@@ -1,5 +1,5 @@
+import { RelayEventSchema } from "@polka/types/event.ts";
 import { broadcast, clientKey } from "@polka/utils/udp/broadcast.ts";
-import { RelayEventSchema } from "../types/event.ts";
 
 export async function startServer(port: number): Promise<void> {
 	const conn = Deno.listenDatagram({

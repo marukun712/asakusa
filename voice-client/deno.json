@@ -4,11 +4,13 @@
 	"tasks": {
 		"start": "deno run --allow-net --allow-read --allow-env mod.ts"
 	},
+	"exports": {
+		".": "./mod.ts"
+	},
 	"imports": {
-		"@dicebear/core": "npm:@dicebear/core@^10.3.0",
-		"@dicebear/pixel-art": "npm:@dicebear/pixel-art@^9.4.2",
+		"@polka/types": "@polka/types",
+		"@polka/utils": "@polka/utils",
 		"@noble/curves": "jsr:@noble/curves@^2.2.0",
-		"@noble/hashes": "jsr:@noble/hashes@^2.2.0",
 		"opusscript": "npm:opusscript@^0.1.1"
 	}
 }

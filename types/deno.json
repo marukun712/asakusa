@@ -1,0 +1,12 @@
+{
+	"name": "@polka/types",
+	"version": "0.1.0",
+	"imports": {
+		"zod": "npm:zod@^4.4.3"
+	},
+	"exports": {
+		"./ports.ts": "./ports.ts",
+		"./packet.ts": "./packet.ts",
+		"./event.ts": "./event.ts"
+	}
+}

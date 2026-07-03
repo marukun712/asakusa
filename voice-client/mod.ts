@@ -1,4 +1,4 @@
-import { VOICE_CLIENT_PORT } from "../ports.ts";
+import { VOICE_CLIENT_PORT } from "@polka/types/ports.ts";
 import { startServer } from "./server/http.ts";
 
 const port = parseInt(

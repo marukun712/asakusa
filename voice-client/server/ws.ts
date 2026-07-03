@@ -1,7 +1,10 @@
 // https://github.com/nicktindall/opusscript
 import { Buffer } from "node:buffer";
+import {
+	computeFingerprint,
+	generateAvatar,
+} from "@polka/utils/crypto/fingerprint.ts";
 import OpusScript from "opusscript";
-import { computeFingerprint, generateAvatar } from "./fingerprint.ts";
 import {
 	buildPacket,
 	createSession,

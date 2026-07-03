@@ -9,8 +9,8 @@ import {
 	InputRenderableEvents,
 	TextRenderable,
 } from "@opentui/core";
-import { DOCS_PORT } from "../ports.ts";
-import { computeFingerprint } from "../voice-client/server/fingerprint.ts";
+import { DOCS_PORT } from "@polka/types/ports.ts";
+import { computeFingerprint } from "@polka/utils/crypto/fingerprint.ts";
 import { fetchPolka } from "./polka.ts";
 
 export function setupVerify(renderer: CliRenderer, panel: BoxRenderable): void {
