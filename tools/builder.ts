@@ -2,7 +2,11 @@
 import { MarkdownToGemtext } from "md2gmi";
 import { load as loadContent } from "./keypair/content.ts";
 import { buildWellKnown, sign } from "./merkle/sign.ts";
-import { buildMerkleRoot, collectFileHashes } from "./merkle/tree.ts";
+import {
+	buildMerkleRoot,
+	collectFileHashes,
+	collectFilePaths,
+} from "./merkle/tree.ts";
 
 function readPassphrase(): string {
 	const buf = new Uint8Array(256);
@@ -39,8 +43,14 @@ const timestamp = Date.now();
 const sig = sign(rootHash, pair.secretKey);
 const wellKnown = buildWellKnown(pair.publicKey, rootHash, timestamp, sig);
 
+const filePaths = await collectFilePaths(docsDir);
+
 await Deno.mkdir(`${docsDir}/.well-known`, { recursive: true });
 await Deno.writeTextFile(`${docsDir}/.well-known/polka`, wellKnown);
+await Deno.writeTextFile(
+	`${docsDir}/.well-known/polka-manifest`,
+	filePaths.join("\n"),
+);
 
 console.log("wrote .well-known/polka");
 console.log(wellKnown);

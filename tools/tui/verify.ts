@@ -3,13 +3,15 @@
 // https://deno.land/x/crayon@3.3.3/mod.ts
 
 import { ed25519 } from "@noble/curves/ed25519.js";
-import { hexToBytes } from "@noble/curves/utils.js";
+import { bytesToHex, hexToBytes } from "@noble/curves/utils.js";
+import { sha256 } from "@noble/hashes/sha2.js";
 import { DOCS_PORT } from "@polka/types/ports.ts";
 import { computeFingerprint } from "@polka/utils/crypto/fingerprint.ts";
 import { Signal, type Tui } from "@tui";
 import { Input, Label } from "@tui/components";
 import { crayon } from "crayon";
-import { fetchPolka } from "./polka.ts";
+import { buildMerkleRoot } from "../merkle/tree.ts";
+import { fetchPolka, fetchPolkaBytes } from "./polka.ts";
 
 export function setupVerify(tui: Tui): { setVisible: (v: boolean) => void } {
 	const { columns, rows } = Deno.consoleSize();
@@ -65,7 +67,7 @@ export function setupVerify(tui: Tui): { setVisible: (v: boolean) => void } {
 
 		const url = `polka://${host}:${port}/.well-known/polka`;
 		fetchPolka(host, port, url)
-			.then(({ body }) => {
+			.then(async ({ body }) => {
 				const parts = body.trim().split(".");
 				if (parts.length !== 4) {
 					throw new Error("invalid .well-known/polka format");
@@ -84,8 +86,40 @@ export function setupVerify(tui: Tui): { setVisible: (v: boolean) => void } {
 				}
 				const fingerprint = computeFingerprint(contentPk);
 				const date = new Date(parseInt(tsStr, 10)).toLocaleString();
-				const status = valid ? "Signature VALID" : "Signature INVALID";
-				resultSignal.value = `${status}\nFingerprint: ${fingerprint}\nSigned at: ${date}`;
+				const sigStatus = valid ? "Signature VALID" : "Signature INVALID";
+
+				resultSignal.value = `${sigStatus}\nFingerprint: ${fingerprint}\nSigned at: ${date}\nVerifying content...`;
+
+				const manifestUrl = `polka://${host}:${port}/.well-known/polka-manifest`;
+				const manifest = await fetchPolkaBytes(host, port, manifestUrl);
+				if (manifest.status !== 20) {
+					throw new Error("manifest not found");
+				}
+				const paths = new TextDecoder()
+					.decode(manifest.body)
+					.trim()
+					.split("\n")
+					.filter(Boolean);
+
+				const hashes: Uint8Array[] = [];
+				for (const path of paths) {
+					const file = await fetchPolkaBytes(
+						host,
+						port,
+						`polka://${host}:${port}${path}`,
+					);
+					if (file.status !== 20) {
+						throw new Error(`failed to fetch ${path}`);
+					}
+					hashes.push(sha256(file.body));
+				}
+				const computedRoot = buildMerkleRoot(hashes);
+				const contentStatus =
+					bytesToHex(computedRoot) === hashHex
+						? "Content VALID"
+						: "Content INVALID";
+
+				resultSignal.value = `${sigStatus}\n${contentStatus}\nFingerprint: ${fingerprint}\nSigned at: ${date}`;
 			})
 			.catch((err) => {
 				resultSignal.value = `Error: ${String(err)}`;

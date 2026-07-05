@@ -8,14 +8,14 @@
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/streams@*": "1.1.1",
     "npm:@biomejs/biome@^2.5.2": "2.5.2",
-    "npm:@dicebear/core@*": "10.3.0",
-    "npm:@dicebear/core@^10.3.0": "10.3.0",
+    "npm:@dicebear/core@^9.4.2": "9.4.2",
     "npm:@dicebear/pixel-art@*": "9.4.2_@dicebear+core@9.4.2",
     "npm:@dicebear/pixel-art@^9.4.2": "9.4.2_@dicebear+core@9.4.2",
     "npm:@noble/curves@*": "2.0.1",
     "npm:@noble/hashes@*": "2.0.1",
     "npm:age-encryption@0.3": "0.3.0",
     "npm:dioscuri@*": "2.0.0",
+    "npm:md2gmi@^1.0.3": "1.0.3",
     "npm:opusscript@*": "0.1.1",
     "npm:opusscript@~0.1.1": "0.1.1",
     "npm:pcm-convert@*": "3.1.1",
@@ -101,9 +101,6 @@
       "os": ["win32"],
       "cpu": ["x64"]
     },
-    "@dicebear/core@10.3.0": {
-      "integrity": "sha512-HbzHvYY/E0m3B7BfBjs8SO7JyqJnORJgQhM2YM7VoN/EQzrqJ3Z0j4+op+WfEWXWzZj75tQqBU5SZpUssi5m/Q=="
-    },
     "@dicebear/core@9.4.2": {
       "integrity": "sha512-MF0042+Z3s8PGZKZLySfhft28bUa3B1iq0e5NSjCvY8gfMi5aIH/iRJGRJa1N9Jz1BNkxYb4yvJ/N9KO8Z6Y+w==",
       "dependencies": [
@@ -113,7 +110,7 @@
     "@dicebear/pixel-art@9.4.2_@dicebear+core@9.4.2": {
       "integrity": "sha512-peHf7oKICDgBZ8dUyj+txPnS7VZEWgvKE+xW4mNQqBt6dYZIjmva2shOVHn0b1JU+FDxMx3uIkWVixKdUq4WGg==",
       "dependencies": [
-        "@dicebear/core@9.4.2"
+        "@dicebear/core"
       ]
     },
     "@noble/ciphers@2.2.0": {
@@ -170,6 +167,17 @@
         "unist-util-visit",
         "zwitch"
       ]
+    },
+    "marked@12.0.2": {
+      "integrity": "sha512-qXUm7e/YKFoqFPYPa3Ukg9xlI5cyAtGmyEIzMfW//m6kXwCy2Ps9DYf5ioijFKQ8qyuscrHoY04iJGctu2Kg0Q==",
+      "bin": true
+    },
+    "md2gmi@1.0.3": {
+      "integrity": "sha512-Vn4GZoWhBgrB3m0wUWdWb6ong7kYhK5nP1gQniV6+tsUabaXSlaUWkEjftF/NbDo92+D0gL+s45uwTe6SajQUg==",
+      "dependencies": [
+        "marked"
+      ],
+      "bin": true
     },
     "micromark-util-character@2.1.1": {
       "integrity": "sha512-wv8tdUTJ3thSFFFJKtpYKOYiGP2+v96Hvk4Tu8KpCAsTMs6yi+nVmGh1syvSCsaxz45J6Jbw+9DD6g97+NV67Q==",
@@ -305,12 +313,14 @@
         "dependencies": [
           "jsr:@noble/curves@^2.2.0",
           "jsr:@noble/hashes@^2.2.0",
-          "npm:age-encryption@0.3"
+          "npm:age-encryption@0.3",
+          "npm:md2gmi@^1.0.3"
         ]
       },
       "tools/tui": {
         "dependencies": [
-          "jsr:@noble/curves@^2.2.0"
+          "jsr:@noble/curves@^2.2.0",
+          "jsr:@noble/hashes@^2.2.0"
         ]
       },
       "tools/voice-client": {
@@ -330,7 +340,7 @@
           "jsr:@noble/ciphers@^2.2.0",
           "jsr:@noble/curves@^2.2.0",
           "jsr:@noble/hashes@^2.2.0",
-          "npm:@dicebear/core@^10.3.0",
+          "npm:@dicebear/core@^9.4.2",
           "npm:@dicebear/pixel-art@^9.4.2"
         ]
       }

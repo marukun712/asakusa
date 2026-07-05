@@ -37,6 +37,13 @@ export async function collectFileHashes(dir: string): Promise<Uint8Array[]> {
 	return hashes;
 }
 
+export async function collectFilePaths(dir: string): Promise<string[]> {
+	const files: string[] = [];
+	await collectFiles(dir, files);
+	files.sort();
+	return files.map((f) => f.slice(dir.length));
+}
+
 async function collectFiles(dir: string, result: string[]): Promise<void> {
 	for await (const entry of Deno.readDir(dir)) {
 		const path = `${dir}/${entry.name}`;
