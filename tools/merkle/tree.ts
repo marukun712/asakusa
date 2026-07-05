@@ -40,7 +40,7 @@ export async function collectFileHashes(dir: string): Promise<Uint8Array[]> {
 async function collectFiles(dir: string, result: string[]): Promise<void> {
 	for await (const entry of Deno.readDir(dir)) {
 		const path = `${dir}/${entry.name}`;
-		if (entry.isFile) {
+		if (entry.isFile && !entry.name.endsWith(".md")) {
 			result.push(path);
 		} else if (entry.isDirectory) {
 			await collectFiles(path, result);

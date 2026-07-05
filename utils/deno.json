@@ -2,7 +2,7 @@
 	"name": "@polka/utils",
 	"version": "0.1.0",
 	"imports": {
-		"@dicebear/core": "npm:@dicebear/core@^10.3.0",
+		"@dicebear/core": "npm:@dicebear/core@^9.4.2",
 		"@dicebear/pixel-art": "npm:@dicebear/pixel-art@^9.4.2",
 		"@noble/ciphers": "jsr:@noble/ciphers@^2.2.0",
 		"@noble/curves": "jsr:@noble/curves@^2.2.0",

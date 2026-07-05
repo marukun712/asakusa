@@ -1,44 +1,49 @@
-// https://opentui.com/docs/getting-started/
-// https://opentui.com/docs/core-concepts/renderer
+// https://deno.land/x/tui@2.1.11/mod.ts
+// https://deno.land/x/crayon@3.3.3/mod.ts
 import {
-	BoxRenderable,
-	createCliRenderer,
-	TextRenderable,
-} from "@opentui/core";
+	handleInput,
+	handleKeyboardControls,
+	handleMouseControls,
+	Tui,
+} from "@tui";
+import { Label } from "@tui/components";
+import { crayon } from "crayon";
 import { setupBrowse } from "./browse.ts";
 import { setupVerify } from "./verify.ts";
 
-const renderer = await createCliRenderer({ exitOnCtrlC: true });
+const { columns } = Deno.consoleSize();
 
-const hint = new TextRenderable(renderer, {
-	content: "Ctrl+B: Browse | Ctrl+V: Verify | Ctrl+C: Quit",
+const tui = new Tui({
+	style: crayon.bgBlack,
+	refreshRate: 1000 / 60,
 });
-renderer.root.add(hint);
 
-const browsePanel = new BoxRenderable(renderer, {
-	id: "browse-panel",
-	flexGrow: 1,
-	flexDirection: "column",
+handleInput(tui);
+handleMouseControls(tui);
+handleKeyboardControls(tui);
+tui.dispatch();
+
+new Label({
+	parent: tui,
+	text: "Ctrl+B: Browse | Ctrl+V: Verify | Ctrl+C: Quit",
+	rectangle: { column: 0, row: 0, width: columns, height: 1 },
+	theme: { base: crayon.bgBlack.white },
+	align: { horizontal: "left", vertical: "top" },
+	zIndex: 0,
 });
-const verifyPanel = new BoxRenderable(renderer, {
-	id: "verify-panel",
-	flexGrow: 1,
-	flexDirection: "column",
-});
-verifyPanel.visible = false;
 
-renderer.root.add(browsePanel);
-renderer.root.add(verifyPanel);
+const browse = setupBrowse(tui);
+const verify = setupVerify(tui);
+verify.setVisible(false);
 
-setupBrowse(renderer, browsePanel);
-setupVerify(renderer, verifyPanel);
-
-renderer.keyInput.on("keypress", (key) => {
-	if (key.ctrl && key.name === "b") {
-		browsePanel.visible = true;
-		verifyPanel.visible = false;
-	} else if (key.ctrl && key.name === "v") {
-		browsePanel.visible = false;
-		verifyPanel.visible = true;
+tui.on("keyPress", ({ key, ctrl }) => {
+	if (ctrl && key === "b") {
+		browse.setVisible(true);
+		verify.setVisible(false);
+	} else if (ctrl && key === "v") {
+		browse.setVisible(false);
+		verify.setVisible(true);
 	}
 });
+
+tui.run();

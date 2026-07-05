@@ -19,8 +19,7 @@ async function serveStatic(pathname: string): Promise<Response> {
 				"Content-Type": MIME_TYPES[ext] ?? "application/octet-stream",
 			},
 		});
-	} catch (e) {
-		console.error("failed to serve static file:", e);
+	} catch {
 		return new Response("Not Found", { status: 404 });
 	}
 }

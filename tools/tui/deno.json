@@ -2,7 +2,7 @@
 	"name": "@polka/tui",
 	"version": "0.1.0",
 	"tasks": {
-		"start": "deno run --allow-net --allow-ffi --allow-read --allow-env mod.ts"
+		"start": "deno run --allow-net --allow-read --allow-env mod.ts"
 	},
 	"exports": {
 		".": "./mod.ts"
@@ -11,6 +11,8 @@
 		"@polka/types": "@polka/types",
 		"@polka/utils": "@polka/utils",
 		"@noble/curves": "jsr:@noble/curves@^2.2.0",
-		"@opentui/core": "npm:@opentui/core@^0.4.2"
+		"@tui": "https://deno.land/x/tui@2.1.11/mod.ts",
+		"@tui/components": "https://deno.land/x/tui@2.1.11/src/components/mod.ts",
+		"crayon": "https://deno.land/x/crayon@3.3.3/mod.ts"
 	}
 }
