@@ -77,28 +77,16 @@ export function handleWs(ws: WebSocket): void {
 					transport: "udp",
 					...spaceAddr,
 				});
-			} catch {
-				/* */
+			} catch (e) {
+				console.error("failed to encode or send audio:", e);
 			}
 		}
 	};
 
 	ws.onclose = () => {
-		try {
-			udpConn?.close();
-		} catch {
-			/* */
-		}
-		try {
-			encoder?.delete?.();
-		} catch {
-			/* */
-		}
-		try {
-			decoder?.delete?.();
-		} catch {
-			/* */
-		}
+		udpConn?.close();
+		encoder?.delete?.();
+		decoder?.delete?.();
 	};
 }
 
@@ -146,11 +134,11 @@ async function receiveLoop(
 				out.set(prefix, 0);
 				out.set(new Uint8Array(float32.buffer), 4);
 				ws.send(out.buffer);
-			} catch {
-				/* */
+			} catch (e) {
+				console.error("failed to decode audio:", e);
 			}
 		}
-	} catch {
-		/* */
+	} catch (e) {
+		console.error("receive loop error:", e);
 	}
 }

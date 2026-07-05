@@ -6,7 +6,6 @@
 	},
 	"imports": {
 		"@polka/types": "@polka/types",
-		"noise-handshake": "npm:noise-handshake@^4.2.0",
 		"zod": "npm:zod@^4.4.3"
 	}
 }

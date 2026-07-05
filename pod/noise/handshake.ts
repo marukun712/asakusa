@@ -1,8 +1,13 @@
-// https://github.com/holepunchto/noise-handshake
-
 import { readFramed, writeFramed } from "@polka/utils/noise/frame.ts";
-import Noise from "noise-handshake";
-import Cipher from "noise-handshake/cipher";
+import {
+	decryptWithAd,
+	destroy,
+	encryptWithAd,
+	initialize,
+	MACLEN,
+	readMessage,
+	writeMessage,
+} from "@polka/utils/noise/protocol.ts";
 
 export interface Channel {
 	send(data: Uint8Array): Promise<void>;
@@ -16,27 +21,29 @@ export async function serverHandshake(
 	const reader = conn.readable.getReader({ mode: "byob" });
 	const writer = conn.writable.getWriter();
 
-	const noise = new Noise("NX", false, keyPair);
-	noise.initialise(new Uint8Array(0));
+	const state = initialize("NX", false, new Uint8Array(0), keyPair);
 
 	const msg1 = await readFramed(reader);
-	noise.recv(msg1);
+	readMessage(state, msg1, new Uint8Array(0));
 
-	const msg2 = noise.send();
-	await writeFramed(writer, msg2);
+	const msg2Buf = new Uint8Array(256);
+	const { written, split } = writeMessage(state, new Uint8Array(0), msg2Buf);
+	await writeFramed(writer, msg2Buf.subarray(0, written));
 
-	if (!noise.complete) throw new Error("handshake incomplete");
-
-	const sendCipher = new Cipher(noise.tx);
-	const recvCipher = new Cipher(noise.rx);
+	if (!split) throw new Error("handshake incomplete");
+	destroy(state);
 
 	return {
 		async send(data: Uint8Array): Promise<void> {
-			await writeFramed(writer, sendCipher.encrypt(data));
+			const out = new Uint8Array(data.byteLength + MACLEN);
+			encryptWithAd(split.tx, out, null, data);
+			await writeFramed(writer, out);
 		},
 		async recv(): Promise<Uint8Array> {
 			const encrypted = await readFramed(reader);
-			return recvCipher.decrypt(encrypted);
+			const out = new Uint8Array(encrypted.byteLength - MACLEN);
+			decryptWithAd(split.rx, out, null, encrypted);
+			return out;
 		},
 	};
 }

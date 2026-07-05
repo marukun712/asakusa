@@ -1,4 +1,4 @@
-// https://github.com/nicktindall/noise-handshake
+// https://github.com/emilbayes/noise-protocol
 import { clientHandshake } from "./noise_client.ts";
 
 export interface FetchResult {
@@ -29,10 +29,6 @@ export async function fetchPolka(
 			body,
 		};
 	} finally {
-		try {
-			conn.close();
-		} catch {
-			/* */
-		}
+		conn.close();
 	}
 }

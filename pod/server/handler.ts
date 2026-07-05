@@ -42,13 +42,15 @@ async function resolveFile(
 
 	try {
 		realRoot = await Deno.realPath(docsRoot);
-	} catch {
+	} catch (e) {
+		console.error("failed to resolve docs root:", e);
 		return serverError();
 	}
 
 	try {
 		realResolved = await Deno.realPath(resolved);
-	} catch {
+	} catch (e) {
+		console.error("failed to resolve path:", e);
 		return notFound();
 	}
 
@@ -63,7 +65,8 @@ async function resolveFile(
 			: realResolved;
 		const body = await Deno.readFile(target);
 		return success(body);
-	} catch {
+	} catch (e) {
+		console.error("failed to read file:", e);
 		return notFound();
 	}
 }

@@ -10,7 +10,10 @@ export async function startServer(
 	console.log(`docs listening on TCP :${port}`);
 
 	for await (const conn of listener) {
-		handleConnection(conn, docsRoot, keyPair).catch(() => conn.close());
+		handleConnection(conn, docsRoot, keyPair).catch((e) => {
+			console.error("connection error:", e);
+			conn.close();
+		});
 	}
 }
 

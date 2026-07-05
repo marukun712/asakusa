@@ -4,11 +4,14 @@
 	"imports": {
 		"@dicebear/core": "npm:@dicebear/core@^10.3.0",
 		"@dicebear/pixel-art": "npm:@dicebear/pixel-art@^9.4.2",
+		"@noble/ciphers": "jsr:@noble/ciphers@^2.2.0",
+		"@noble/curves": "jsr:@noble/curves@^2.2.0",
 		"@noble/hashes": "jsr:@noble/hashes@^2.2.0"
 	},
 	"exports": {
 		"./udp/broadcast.ts": "./udp/broadcast.ts",
 		"./noise/frame.ts": "./noise/frame.ts",
+		"./noise/protocol.ts": "./noise/protocol.ts",
 		"./crypto/fingerprint.ts": "./crypto/fingerprint.ts"
 	}
 }

@@ -1,6 +1,6 @@
 const MAX_NOISE_MSG = 65535;
 
-export async function readExact(
+export async function read(
 	reader: ReadableStreamBYOBReader,
 	n: number,
 ): Promise<Uint8Array> {
@@ -17,10 +17,10 @@ export async function readExact(
 export async function readFramed(
 	reader: ReadableStreamBYOBReader,
 ): Promise<Uint8Array> {
-	const lenBuf = await readExact(reader, 4);
+	const lenBuf = await read(reader, 4);
 	const len = new DataView(lenBuf.buffer).getUint32(0, false);
 	if (len > MAX_NOISE_MSG) throw new Error("message too large");
-	return readExact(reader, len);
+	return read(reader, len);
 }
 
 export async function writeFramed(
