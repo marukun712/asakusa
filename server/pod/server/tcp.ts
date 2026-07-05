@@ -6,13 +6,12 @@ export async function startServer(
 	docsRoot: string,
 	keyPair: { publicKey: Uint8Array; secretKey: Uint8Array },
 ): Promise<void> {
-	const listener = Deno.listen({ port, transport: "tcp" });
+	const listener = Deno.listen({ hostname: "::", port, transport: "tcp" });
 	console.log(`docs listening on TCP :${port}`);
 
 	for await (const conn of listener) {
 		handleConnection(conn, docsRoot, keyPair).catch((e) => {
 			console.error("connection error:", e);
-			conn.close();
 		});
 	}
 }

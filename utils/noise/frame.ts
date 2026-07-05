@@ -5,11 +5,16 @@ export async function read(
 	n: number,
 ): Promise<Uint8Array> {
 	const result = new Uint8Array(n);
-	let view = new Uint8Array(result.buffer, 0, n);
-	while (view.byteLength > 0) {
-		const { value, done } = await reader.read(view);
+	let offset = 0;
+	while (offset < n) {
+		const buf = new Uint8Array(n - offset);
+		const { value, done } = await reader.read(buf);
 		if (done) throw new Error("connection closed");
-		view = new Uint8Array(result.buffer, value.byteOffset + value.byteLength);
+		result.set(
+			new Uint8Array(value.buffer, value.byteOffset, value.byteLength),
+			offset,
+		);
+		offset += value.byteLength;
 	}
 	return result;
 }
