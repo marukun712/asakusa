@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Polka Browser</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+
+<body>
+  <header class="container">
+    <nav>
+      <ul>
+        <li><strong>Polka Browser</strong></li>
+      </ul>
+      <ul>
+        <li><button type="button" id="tab-browse" aria-current="page">Browse</button></li>
+        <li><button type="button" id="tab-verify">Verify</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="section-browse">
+      <form id="browse-form">
+        <div>
+          <input type="text" id="browse-url" placeholder="polka://hostname:8180/path" style="flex:1">
+          <button type="submit">Fetch</button>
+        </div>
+      </form>
+      <p id="browse-status" style="display:none"></p>
+      <pre id="browse-content" style="display:none"></pre>
+    </section>
+
+    <section id="section-verify" hidden>
+      <form id="verify-form">
+        <div>
+          <input type="text" id="verify-host" placeholder="hostname" style="flex:2">
+          <input type="number" id="verify-port" placeholder="8180" style="flex:1">
+          <button type="submit">Verify</button>
+        </div>
+      </form>
+      <div id="verify-avatar" hidden style="margin-top:1rem"></div>
+      <pre id="verify-result" style="display:none"></pre>
+    </section>
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>

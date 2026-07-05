@@ -317,7 +317,7 @@
           "npm:md2gmi@^1.0.3"
         ]
       },
-      "tools/tui": {
+      "tools/browser": {
         "dependencies": [
           "jsr:@noble/curves@^2.2.0",
           "jsr:@noble/hashes@^2.2.0"

@@ -45,12 +45,12 @@ const wellKnown = buildWellKnown(pair.publicKey, rootHash, timestamp, sig);
 
 const filePaths = await collectFilePaths(docsDir);
 
-await Deno.mkdir(`${docsDir}/.well-known`, { recursive: true });
-await Deno.writeTextFile(`${docsDir}/.well-known/polka`, wellKnown);
+await Deno.mkdir(`${docsDir}/.well-known/polka`, { recursive: true });
+await Deno.writeTextFile(`${docsDir}/.well-known/polka/token`, wellKnown);
 await Deno.writeTextFile(
-	`${docsDir}/.well-known/polka-manifest`,
+	`${docsDir}/.well-known/polka/manifest`,
 	filePaths.join("\n"),
 );
 
-console.log("wrote .well-known/polka");
+console.log("wrote .well-known/polka/token");
 console.log(wellKnown);

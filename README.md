@@ -42,9 +42,9 @@ cp .env.example .env
 
 | コマンド | 説明 |
 |---|---|
-| `deno task tui` | TUI クライアントを起動する。`Ctrl+B` で Pod ブラウズ、`Ctrl+V` でコンテンツ検証、`Ctrl+C` で終了。 |
+| `deno task browser` | ブラウザクライアントを起動する。`http://localhost:8184` で Pod のブラウズとコンテンツ検証が行えます。 |
 | `deno task voice-client` | 音声クライアントを起動する。Space Server に接続して音声を送受信します。 |
-| `deno task builder` | ドキュメントをビルドする。Markdown を Gemtext に変換し、Merkle Tree を構築してコンテンツ鍵で署名します。`.well-known/polka` を出力します。 |
+| `deno task builder` | ドキュメントをビルドする。Markdown を Gemtext に変換し、Merkle Tree を構築してコンテンツ鍵で署名します。`.well-known/polka/token` と `.well-known/polka/manifest` を出力します。 |
 | `deno task setup` | 鍵ペアを生成する。初回のみ実行します。 |
 
 ---
@@ -57,7 +57,7 @@ cp .env.example .env
 | `DOCS_PORT` | `8180` | Pod (Document Server) のポート番号 |
 | `RELAY_PORT` | `8181` | Relay Server のポート番号 |
 | `SPACE_PORT` | `8182` | Voice Space Server のポート番号 |
-| `CLIENT_PORT` | `8183` | Voice Client のポート番号 |
+| `CLIENT_PORT` | `8184` | ブラウザクライアントのポート番号 |
 
 ---
 

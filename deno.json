@@ -4,9 +4,9 @@
 		"relay": "deno run --env-file --allow-net --allow-env --unstable-net server/relay/mod.ts",
 		"space": "deno run --env-file --allow-net --allow-env --unstable-net server/space/mod.ts",
 		"voice-client": "deno run --env-file --allow-net --allow-read --allow-env --unstable-net tools/voice-client/mod.ts",
-		"tui": "deno run --env-file --allow-net --allow-read --allow-env tools/tui/mod.ts",
 		"setup": "deno run --env-file --allow-read --allow-write --allow-env tools/setup.ts",
-		"builder": "deno run --env-file --allow-read --allow-write --allow-env tools/builder.ts"
+		"builder": "deno run --env-file --allow-read --allow-write --allow-env tools/builder.ts",
+		"browser": "deno run --env-file --allow-net --allow-read --allow-env tools/browser/mod.ts"
 	},
 	"workspace": [
 		"types",
@@ -16,7 +16,7 @@
 		"server/relay",
 		"server/space",
 		"tools",
-		"tools/tui"
+		"tools/browser"
 	],
 	"nodeModulesDir": "auto",
 	"imports": {

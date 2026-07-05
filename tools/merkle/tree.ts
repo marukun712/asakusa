@@ -41,11 +41,18 @@ export async function collectFilePaths(dir: string): Promise<string[]> {
 	const files: string[] = [];
 	await collectFiles(dir, files);
 	files.sort();
-	return files.map((f) => f.slice(dir.length));
+	return files.map((f) => {
+		const rel = f.slice(dir.length);
+		return rel
+			.split("/")
+			.map((seg) => (seg ? encodeURIComponent(seg) : seg))
+			.join("/");
+	});
 }
 
 async function collectFiles(dir: string, result: string[]): Promise<void> {
 	for await (const entry of Deno.readDir(dir)) {
+		if (entry.isDirectory && entry.name === ".well-known") continue;
 		const path = `${dir}/${entry.name}`;
 		if (entry.isFile && !entry.name.endsWith(".md")) {
 			result.push(path);

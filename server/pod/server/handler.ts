@@ -25,7 +25,7 @@ export async function handleRequest(
 		return;
 	}
 
-	const pathname = new URL(parsed.data).pathname;
+	const pathname = decodeURIComponent(new URL(parsed.data).pathname);
 	const response = await resolveFile(docsRoot, pathname);
 	await channel.send(response);
 }
