@@ -1,22 +1,22 @@
 {
 	"tasks": {
-		"pod": "deno run --allow-net --allow-read --allow-env pod/mod.ts",
-		"relay": "deno run --allow-net --allow-env relay/mod.ts",
-		"space": "deno run --allow-net --allow-env space/mod.ts",
-		"voice-client": "deno run --allow-net --allow-read --allow-env voice-client/mod.ts",
-		"tui": "deno run --allow-net --allow-ffi --allow-read --allow-env tui/mod.ts",
+		"pod": "deno run --allow-net --allow-read --allow-env server/pod/mod.ts",
+		"relay": "deno run --allow-net --allow-env server/relay/mod.ts",
+		"space": "deno run --allow-net --allow-env server/space/mod.ts",
+		"voice-client": "deno run --allow-net --allow-read --allow-env tools/voice-client/mod.ts",
+		"tui": "deno run --allow-net --allow-ffi --allow-read --allow-env tools/tui/mod.ts",
 		"setup": "deno run --allow-read --allow-write --allow-env tools/setup.ts",
 		"builder": "deno run --allow-read --allow-write --allow-env tools/builder.ts"
 	},
 	"workspace": [
 		"types",
 		"utils",
-		"voice-client",
-		"pod",
-		"relay",
-		"space",
+		"tools/voice-client",
+		"server/pod",
+		"server/relay",
+		"server/space",
 		"tools",
-		"tui"
+		"tools/tui"
 	],
 	"nodeModulesDir": "auto",
 	"imports": {
