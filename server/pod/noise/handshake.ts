@@ -1,13 +1,5 @@
-import { readFramed, writeFramed } from "@polka/utils/noise/frame.ts";
-import {
-	decryptWithAd,
-	destroy,
-	encryptWithAd,
-	initialize,
-	MACLEN,
-	readMessage,
-	writeMessage,
-} from "@polka/utils/noise/protocol.ts";
+import { readMessage, writeMessage } from "@polka/utils/noise/frame.ts";
+import { createTransport, server_first } from "@polka/utils/noise/protocol.ts";
 
 export interface Channel {
 	send(data: Uint8Array): Promise<void>;
@@ -21,29 +13,31 @@ export async function serverHandshake(
 	const reader = conn.readable.getReader({ mode: "byob" });
 	const writer = conn.writable.getWriter();
 
-	const state = initialize("NX", false, new Uint8Array(0), keyPair);
+	const e_client_pk = await readMessage(reader);
 
-	const msg1 = await readFramed(reader);
-	readMessage(state, msg1, new Uint8Array(0));
+	const result = server_first(e_client_pk, {
+		pk: keyPair.publicKey,
+		sk: keyPair.secretKey,
+	});
 
-	const msg2Buf = new Uint8Array(256);
-	const { written, split } = writeMessage(state, new Uint8Array(0), msg2Buf);
-	await writeFramed(writer, msg2Buf.subarray(0, written));
+	const msg = new Uint8Array(
+		result.public.e.length + result.public.s_pk_encrypted.length,
+	);
+	msg.set(result.public.e, 0);
+	msg.set(result.public.s_pk_encrypted, result.public.e.length);
+	await writeMessage(writer, msg);
 
-	if (!split) throw new Error("handshake incomplete");
-	destroy(state);
+	const transport = createTransport(
+		result.private.encrypt,
+		result.private.decrypt,
+	);
 
 	return {
 		async send(data: Uint8Array): Promise<void> {
-			const out = new Uint8Array(data.byteLength + MACLEN);
-			encryptWithAd(split.tx, out, null, data);
-			await writeFramed(writer, out);
+			await writeMessage(writer, transport.encrypt(data));
 		},
 		async recv(): Promise<Uint8Array> {
-			const encrypted = await readFramed(reader);
-			const out = new Uint8Array(encrypted.byteLength - MACLEN);
-			decryptWithAd(split.rx, out, null, encrypted);
-			return out;
+			return transport.decrypt(await readMessage(reader));
 		},
 	};
 }

@@ -339,7 +339,7 @@
       "npm:@biomejs/biome@^2.5.2"
     ],
     "members": {
-      "pod": {
+      "server/pod": {
         "dependencies": [
           "npm:zod@^4.4.3"
         ]
@@ -351,10 +351,17 @@
           "npm:age-encryption@0.3"
         ]
       },
-      "tui": {
+      "tools/tui": {
         "dependencies": [
           "jsr:@noble/curves@^2.2.0",
           "npm:@opentui/core@~0.4.2"
+        ]
+      },
+      "tools/voice-client": {
+        "dependencies": [
+          "jsr:@noble/curves@^2.2.0",
+          "npm:opusscript@~0.1.1",
+          "npm:pcm-convert@^3.1.1"
         ]
       },
       "types": {
@@ -369,13 +376,6 @@
           "jsr:@noble/hashes@^2.2.0",
           "npm:@dicebear/core@^10.3.0",
           "npm:@dicebear/pixel-art@^9.4.2"
-        ]
-      },
-      "voice-client": {
-        "dependencies": [
-          "jsr:@noble/curves@^2.2.0",
-          "npm:opusscript@~0.1.1",
-          "npm:pcm-convert@^3.1.1"
         ]
       }
     }

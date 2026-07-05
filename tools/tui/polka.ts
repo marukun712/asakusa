@@ -1,5 +1,4 @@
-// https://github.com/emilbayes/noise-protocol
-import { clientHandshake } from "./noise_client.ts";
+import { clientHandshake } from "./handshake.ts";
 
 export interface FetchResult {
 	transportKey: Uint8Array;

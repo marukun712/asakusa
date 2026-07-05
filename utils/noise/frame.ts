@@ -14,7 +14,7 @@ export async function read(
 	return result;
 }
 
-export async function readFramed(
+export async function readMessage(
 	reader: ReadableStreamBYOBReader,
 ): Promise<Uint8Array> {
 	const lenBuf = await read(reader, 4);
@@ -23,7 +23,7 @@ export async function readFramed(
 	return read(reader, len);
 }
 
-export async function writeFramed(
+export async function writeMessage(
 	writer: WritableStreamDefaultWriter<Uint8Array>,
 	data: Uint8Array,
 ): Promise<void> {

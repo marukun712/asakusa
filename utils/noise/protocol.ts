@@ -78,7 +78,7 @@ export const server_first = (
 	// 累積鍵を暗号鍵・復号鍵に分割
 	const split = mixKey(ck, new Uint8Array());
 	return {
-		public: { e: e_server_pk, s: s_pk_encrypted },
+		public: { e: e_server_pk, s_pk_encrypted },
 		private: { encrypt: split.temp_k, decrypt: split.ck },
 	};
 };
@@ -114,5 +114,32 @@ export const client_second = (
 
 	// 累積鍵を暗号鍵・復号鍵に分割
 	const split = mixKey(ck, new Uint8Array());
-	return { private: { encrypt: split.ck, decrypt: split.temp_k } };
+	return {
+		private: { encrypt: split.ck, decrypt: split.temp_k },
+		serverPublicKey: s_pk,
+	};
+};
+
+export const createTransport = (
+	encryptKey: Uint8Array,
+	decryptKey: Uint8Array,
+) => {
+	let encryptNonce = 0n;
+	let decryptNonce = 0n;
+	return {
+		encrypt(data: Uint8Array): Uint8Array {
+			return chacha20poly1305(
+				encryptKey,
+				encodeNonce(encryptNonce++),
+				new Uint8Array(),
+			).encrypt(data);
+		},
+		decrypt(data: Uint8Array): Uint8Array {
+			return chacha20poly1305(
+				decryptKey,
+				encodeNonce(decryptNonce++),
+				new Uint8Array(),
+			).decrypt(data);
+		},
+	};
 };
