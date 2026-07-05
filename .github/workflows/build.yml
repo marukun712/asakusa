@@ -1,0 +1,30 @@
+name: build
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: compile
+        run: |
+          deno compile --allow-net --allow-read --allow-write --allow-env --unstable-net \
+            --output dist/polka main.ts
+
+      - name: upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/polka
+

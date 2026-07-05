@@ -1,12 +1,12 @@
 {
 	"tasks": {
-		"pod": "deno run --env-file --allow-net --allow-read --allow-env server/pod/mod.ts",
-		"relay": "deno run --env-file --allow-net --allow-env --unstable-net server/relay/mod.ts",
-		"space": "deno run --env-file --allow-net --allow-env --unstable-net server/space/mod.ts",
-		"voice-client": "deno run --env-file --allow-net --allow-read --allow-env --unstable-net tools/voice-client/mod.ts",
-		"setup": "deno run --env-file --allow-read --allow-write --allow-env tools/setup.ts",
-		"builder": "deno run --env-file --allow-read --allow-write --allow-env tools/builder.ts",
-		"browser": "deno run --env-file --allow-net --allow-read --allow-env tools/browser/mod.ts"
+		"relay": "deno run --allow-net --allow-env --unstable-net main.ts relay",
+		"space": "deno run --allow-net --allow-env --unstable-net main.ts space",
+		"pod": "deno run --allow-net --allow-read --allow-env main.ts pod",
+		"voice": "deno run --allow-net --allow-read --allow-env --unstable-net main.ts voice",
+		"browser": "deno run --allow-net --allow-read --allow-env main.ts browser",
+		"setup": "deno run --allow-read --allow-write --allow-env main.ts setup",
+		"build": "deno run --allow-read --allow-write --allow-env main.ts build"
 	},
 	"workspace": [
 		"types",
@@ -18,8 +18,8 @@
 		"tools",
 		"tools/browser"
 	],
-	"nodeModulesDir": "auto",
 	"imports": {
-		"@biomejs/biome": "npm:@biomejs/biome@^2.5.2"
+		"@biomejs/biome": "npm:@biomejs/biome@^2.5.2",
+		"@std/cli": "jsr:@std/cli@^1.0.32"
 	}
 }

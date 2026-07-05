@@ -1,3 +1,5 @@
+// https://jsr.io/@std/cli/doc/prompt-secret/~/promptSecret
+import { promptSecret } from "@std/cli/prompt-secret";
 // https://www.npmjs.com/package/md2gmi
 import { MarkdownToGemtext } from "md2gmi";
 import { load as loadContent } from "./keypair/content.ts";
@@ -7,18 +9,6 @@ import {
 	collectFileHashes,
 	collectFilePaths,
 } from "./merkle/tree.ts";
-
-function readPassphrase(): string {
-	const buf = new Uint8Array(256);
-	Deno.stdout.writeSync(new TextEncoder().encode("Content key passphrase: "));
-	const n = Deno.stdin.readSync(buf);
-	if (n === null) throw new Error("no input");
-	return new TextDecoder().decode(buf.subarray(0, n)).trim();
-}
-
-const home = Deno.env.get("HOME") ?? "";
-const docsRoot = Deno.env.get("DOCS_ROOT") ?? `${home}/.polka/pod/`;
-const docsDir = Deno.args[0] ?? docsRoot;
 
 async function convertMarkdown(dir: string): Promise<void> {
 	for await (const entry of Deno.readDir(dir)) {
@@ -33,24 +23,30 @@ async function convertMarkdown(dir: string): Promise<void> {
 	}
 }
 
-const passphrase = readPassphrase();
-const pair = await loadContent(passphrase);
+export async function run(args: string[]): Promise<void> {
+	const home = Deno.env.get("HOME") ?? "";
+	const docsRoot = `${home}/.polka/pod/`;
+	const docsDir = args[0] ?? docsRoot;
 
-await convertMarkdown(docsDir);
-const hashes = await collectFileHashes(docsDir);
-const rootHash = buildMerkleRoot(hashes);
-const timestamp = Date.now();
-const sig = sign(rootHash, pair.secretKey);
-const wellKnown = buildWellKnown(pair.publicKey, rootHash, timestamp, sig);
+	const passphrase = promptSecret("Content key passphrase:") ?? "";
+	const pair = await loadContent(passphrase);
 
-const filePaths = await collectFilePaths(docsDir);
+	await convertMarkdown(docsDir);
+	const hashes = await collectFileHashes(docsDir);
+	const rootHash = buildMerkleRoot(hashes);
+	const timestamp = Date.now();
+	const sig = sign(rootHash, pair.secretKey);
+	const wellKnown = buildWellKnown(pair.publicKey, rootHash, timestamp, sig);
 
-await Deno.mkdir(`${docsDir}/.well-known/polka`, { recursive: true });
-await Deno.writeTextFile(`${docsDir}/.well-known/polka/token`, wellKnown);
-await Deno.writeTextFile(
-	`${docsDir}/.well-known/polka/manifest`,
-	filePaths.join("\n"),
-);
+	const filePaths = await collectFilePaths(docsDir);
 
-console.log("wrote .well-known/polka/token");
-console.log(wellKnown);
+	await Deno.mkdir(`${docsDir}/.well-known/polka`, { recursive: true });
+	await Deno.writeTextFile(`${docsDir}/.well-known/polka/token`, wellKnown);
+	await Deno.writeTextFile(
+		`${docsDir}/.well-known/polka/manifest`,
+		filePaths.join("\n"),
+	);
+
+	console.log("wrote .well-known/polka/token");
+	console.log(wellKnown);
+}

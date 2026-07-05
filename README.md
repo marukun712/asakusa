@@ -18,14 +18,6 @@ deno task setup
 
 コンテンツ鍵のパスフレーズを対話形式で入力します。
 
-### 2. 環境変数の設定
-
-`.env.example` をコピーして `.env` を作成し、各値を編集します。
-
-```sh
-cp .env.example .env
-```
-
 ---
 
 ## コマンド一覧
@@ -42,22 +34,24 @@ cp .env.example .env
 
 | コマンド | 説明 |
 |---|---|
-| `deno task browser` | ブラウザクライアントを起動する。`http://localhost:8184` で Pod のブラウズとコンテンツ検証が行えます。 |
-| `deno task voice-client` | 音声クライアントを起動する。Space Server に接続して音声を送受信します。 |
-| `deno task builder` | ドキュメントをビルドする。Markdown を Gemtext に変換し、Merkle Tree を構築してコンテンツ鍵で署名します。`.well-known/polka/token` と `.well-known/polka/manifest` を出力します。 |
+| `deno task browser` | ブラウザクライアントを起動する。`http://localhost:8183` で Pod のブラウズとコンテンツ検証が行えます。 |
+| `deno task voice` | 音声クライアントを起動する。Space Server に接続して音声を送受信します。 |
+| `deno task build` | ドキュメントをビルドする。Markdown を Gemtext に変換し、Merkle Tree を構築してコンテンツ鍵で署名します。`.well-known/polka/token` と `.well-known/polka/manifest` を出力します。 |
 | `deno task setup` | 鍵ペアを生成する。初回のみ実行します。 |
 
----
+### バイナリ (polka) のサブコマンド
 
-## 環境変数
+ビルド済みバイナリを使う場合は `polka <subcommand> [args]` で実行します。
 
-| 変数名 | デフォルト値 | 説明 |
-|---|---|---|
-| `DOCS_ROOT` | `~/.polka/pod/` | Pod が配信するドキュメントのルートディレクトリ |
-| `DOCS_PORT` | `8180` | Pod (Document Server) のポート番号 |
-| `RELAY_PORT` | `8181` | Relay Server のポート番号 |
-| `SPACE_PORT` | `8182` | Voice Space Server のポート番号 |
-| `CLIENT_PORT` | `8183` | ブラウザクライアントのポート番号 |
+```
+polka relay [port]            relay server を起動する
+polka space [port]            space server を起動する
+polka pod [port] [docs-root]  pod server を起動する
+polka voice [port]            音声クライアントを起動する
+polka browser [port]          ブラウザクライアントを起動する
+polka setup                   鍵ペアを生成する
+polka build [docs-dir]        ドキュメントをビルドして署名する
+```
 
 ---
 
@@ -73,6 +67,16 @@ cp .env.example .env
   content/
     key      - Ed25519 秘密鍵 (コンテンツ署名用、パスフレーズで暗号化)
     key.pub  - Ed25519 公開鍵
+```
+
+---
+
+## Nix
+
+開発環境:
+
+```sh
+nix develop
 ```
 
 ---

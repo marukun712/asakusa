@@ -1,3 +1,5 @@
+// https://jsr.io/@std/cli/doc/prompt-secret/~/promptSecret
+import { promptSecret } from "@std/cli/prompt-secret";
 import {
 	generate as generateContent,
 	save as saveContent,
@@ -7,20 +9,14 @@ import {
 	save as saveTransport,
 } from "./keypair/transport.ts";
 
-function readPassphrase(): string {
-	const buf = new Uint8Array(256);
-	Deno.stdout.writeSync(new TextEncoder().encode("Content key passphrase: "));
-	const n = Deno.stdin.readSync(buf);
-	if (n === null) throw new Error("no input");
-	return new TextDecoder().decode(buf.subarray(0, n)).trim();
+export async function run(): Promise<void> {
+	const passphrase = promptSecret("Content key passphrase:") ?? "";
+
+	const transport = generateTransport();
+	await saveTransport(transport);
+	console.log("transport keypair saved to ~/.polka/transport/");
+
+	const content = generateContent();
+	await saveContent(content, passphrase);
+	console.log("content keypair saved to ~/.polka/content/");
 }
-
-const passphrase = readPassphrase();
-
-const transport = generateTransport();
-await saveTransport(transport);
-console.log("transport keypair saved to ~/.polka/transport/");
-
-const content = generateContent();
-await saveContent(content, passphrase);
-console.log("content keypair saved to ~/.polka/content/");
