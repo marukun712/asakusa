@@ -57,7 +57,7 @@ cp .env.example .env
 | `DOCS_PORT` | `8180` | Pod (Document Server) のポート番号 |
 | `RELAY_PORT` | `8181` | Relay Server のポート番号 |
 | `SPACE_PORT` | `8182` | Voice Space Server のポート番号 |
-| `CLIENT_PORT` | `8184` | ブラウザクライアントのポート番号 |
+| `CLIENT_PORT` | `8183` | ブラウザクライアントのポート番号 |
 
 ---
 

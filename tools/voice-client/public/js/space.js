@@ -10,6 +10,7 @@ export function initSpace(ws) {
 	const myIdentityEl = document.getElementById("my-identity");
 	const participantsEl = document.getElementById("participants");
 
+	const audioModeEl = document.getElementById("audio-mode");
 	let audioCtx = null;
 	let mediaStream = null;
 	let processor = null;
@@ -35,8 +36,8 @@ export function initSpace(ws) {
 			myIdentityEl.hidden = false;
 			joined = true;
 			setControls(true);
-			startAudio().catch((err) => {
-				participantsEl.innerHTML = `<p>Microphone error: ${err.message}</p>`;
+			startAudio(audioModeEl.value).catch((err) => {
+				participantsEl.innerHTML = `<p>Audio error: ${err.message}</p>`;
 			});
 		}
 
@@ -58,11 +59,18 @@ export function initSpace(ws) {
 		}
 	});
 
-	async function startAudio() {
-		mediaStream = await navigator.mediaDevices.getUserMedia({
-			audio: true,
-			video: false,
-		});
+	async function startAudio(mode) {
+		if (mode === "desktop") {
+			mediaStream = await navigator.mediaDevices.getDisplayMedia({
+				audio: true,
+				video: false,
+			});
+		} else {
+			mediaStream = await navigator.mediaDevices.getUserMedia({
+				audio: true,
+				video: false,
+			});
+		}
 		audioCtx = new AudioContext({ sampleRate: 48000 });
 		const source = audioCtx.createMediaStreamSource(mediaStream);
 		processor = audioCtx.createScriptProcessor(480, 1, 1);
@@ -109,6 +117,7 @@ export function initSpace(ws) {
 		hostInput.disabled = active;
 		portInput.disabled = active;
 		handleInput.disabled = active;
+		audioModeEl.disabled = active;
 	}
 
 	form.addEventListener("submit", (e) => {
