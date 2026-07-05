@@ -77,6 +77,10 @@ document.getElementById("verify-form").addEventListener("submit", async (e) => {
 		`Signed at: ${new Date(data.signedAt).toLocaleString()}`,
 	].join("\n");
 
-	verifyAvatar.innerHTML = data.avatarSvg;
+	const svgDoc = new DOMParser().parseFromString(
+		data.avatarSvg,
+		"image/svg+xml",
+	);
+	verifyAvatar.replaceChildren(document.adoptNode(svgDoc.documentElement));
 	verifyAvatar.hidden = false;
 });
