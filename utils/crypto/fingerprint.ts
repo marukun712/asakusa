@@ -1,8 +1,8 @@
 // https://github.com/paulmillr/noble-hashes
 
-// https://www.dicebear.com/how-to-use/js-library/
+import * as bottts from "@dicebear/bottts";
+// https://www.dicebear.com/styles/bottts/
 import { createAvatar } from "@dicebear/core";
-import * as pixelArt from "@dicebear/pixel-art";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 
@@ -11,5 +11,5 @@ export function computeFingerprint(publicKey: Uint8Array): string {
 }
 
 export function generateAvatar(fingerprint: string): string {
-	return createAvatar(pixelArt, { seed: fingerprint }).toString();
+	return createAvatar(bottts, { seed: fingerprint }).toString();
 }

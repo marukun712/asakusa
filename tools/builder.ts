@@ -23,11 +23,7 @@ async function convertMarkdown(dir: string): Promise<void> {
 	}
 }
 
-export async function run(args: string[]): Promise<void> {
-	const home = Deno.env.get("HOME") ?? "";
-	const docsRoot = `${home}/.polka/pod/`;
-	const docsDir = args[0] ?? docsRoot;
-
+export async function run(docsDir: string): Promise<void> {
 	const passphrase = promptSecret("Content key passphrase:") ?? "";
 	const pair = await loadContent(passphrase);
 

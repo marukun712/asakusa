@@ -1,3 +1,6 @@
+// https://github.com/wooorm/dioscuri
+import { buffer } from "https://esm.sh/dioscuri";
+
 const tabBrowse = document.getElementById("tab-browse");
 const tabVerify = document.getElementById("tab-verify");
 const sectionBrowse = document.getElementById("section-browse");
@@ -21,12 +24,10 @@ tabVerify.addEventListener("click", (e) => {
 
 const browseStatus = document.getElementById("browse-status");
 const browseContent = document.getElementById("browse-content");
+const browseUrlInput = document.getElementById("browse-url");
 
-document.getElementById("browse-form").addEventListener("submit", async (e) => {
-	e.preventDefault();
-	const url = document.getElementById("browse-url").value.trim();
-	if (!url) return;
-
+async function fetchAndRender(url) {
+	browseUrlInput.value = url;
 	browseStatus.textContent = "Loading...";
 	browseStatus.style.display = "";
 	browseContent.style.display = "none";
@@ -39,9 +40,50 @@ document.getElementById("browse-form").addEventListener("submit", async (e) => {
 		return;
 	}
 
-	browseStatus.textContent = `Key: ${data.fingerprint.slice(0, 16)}...  [${data.status} ${data.meta}]`;
-	browseContent.textContent = data.body;
+	browseStatus.textContent = `[${data.status} ${data.meta}]  Key: ${data.fingerprint.slice(
+		0,
+		16,
+	)}...`;
+
+	const isGemini =
+		data.status === 20 &&
+		(data.meta === "" ||
+			data.meta.toLowerCase().includes("gemini") ||
+			data.meta.toLowerCase().includes("gmi"));
+
+	if (isGemini) {
+		browseContent.replaceChildren(parseGmi(data.body));
+	} else {
+		const preEl = document.createElement("pre");
+		preEl.textContent = data.body;
+		browseContent.replaceChildren(preEl);
+	}
 	browseContent.style.display = "";
+}
+
+function parseGmi(text) {
+	const html = buffer(text);
+	const div = document.createElement("div");
+	div.innerHTML = html;
+	return div;
+}
+
+browseContent.addEventListener("click", (e) => {
+	const a = e.target.closest("a");
+	if (!a) return;
+	const href = a.getAttribute("href");
+	if (!href) return;
+	e.preventDefault();
+	if (href.startsWith("polka://")) {
+		fetchAndRender(href);
+	}
+});
+
+document.getElementById("browse-form").addEventListener("submit", (e) => {
+	e.preventDefault();
+	const url = browseUrlInput.value.trim();
+	if (!url) return;
+	fetchAndRender(url);
 });
 
 const verifyAvatar = document.getElementById("verify-avatar");

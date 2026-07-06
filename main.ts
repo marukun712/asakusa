@@ -4,6 +4,7 @@ import {
 	RELAY_PORT,
 	SPACE_PORT,
 } from "@polka/types/ports.ts";
+import { parseArgs } from "@std/cli/parse-args";
 import { startServer as startPod } from "./server/pod/server/tcp.ts";
 import { startServer as startRelay } from "./server/relay/server/udp.ts";
 import { startServer as startSpace } from "./server/space/server/udp.ts";
@@ -12,35 +13,43 @@ import { run as runBuilder } from "./tools/builder.ts";
 import { run as runSetup } from "./tools/setup.ts";
 import { startServer as startVoice } from "./tools/voice-client/server/http.ts";
 
-const [subcommand, ...args] = Deno.args;
+function resolveHome(path: string): string {
+	const home = Deno.env.get("HOME") ?? "";
+	return `${home}/${path}`;
+}
+
+const [subcommand, ...rest] = Deno.args;
+
+const flags = parseArgs(rest, {
+	string: ["port", "dir"],
+});
 
 switch (subcommand) {
 	case "relay":
-		await startRelay(parseInt(args[0] ?? String(RELAY_PORT), 10));
+		await startRelay(parseInt(flags.port ?? String(RELAY_PORT), 10));
 		break;
 
 	case "space":
-		await startSpace(parseInt(args[0] ?? String(SPACE_PORT), 10));
+		await startSpace(parseInt(flags.port ?? String(SPACE_PORT), 10));
 		break;
 
 	case "pod": {
-		const port = parseInt(args[0] ?? String(DOCS_PORT), 10);
-		const home = Deno.env.get("HOME") ?? "";
-		const docsRoot = args[1] ?? `${home}/.polka/pod/`;
+		const port = parseInt(flags.port ?? String(DOCS_PORT), 10);
+		const docsRoot = flags.dir ?? resolveHome(".polka/pod/");
 		const keyPair = {
-			secretKey: await Deno.readFile(`${home}/.polka/transport/key`),
-			publicKey: await Deno.readFile(`${home}/.polka/transport/key.pub`),
+			secretKey: await Deno.readFile(resolveHome(".polka/transport/key")),
+			publicKey: await Deno.readFile(resolveHome(".polka/transport/key.pub")),
 		};
 		await startPod(port, docsRoot, keyPair);
 		break;
 	}
 
 	case "voice":
-		startVoice(parseInt(args[0] ?? String(BROWSER_PORT), 10));
+		startVoice(parseInt(flags.port ?? String(BROWSER_PORT), 10));
 		break;
 
 	case "browser":
-		startBrowser(parseInt(args[0] ?? String(BROWSER_PORT), 10));
+		startBrowser(parseInt(flags.port ?? String(BROWSER_PORT), 10));
 		break;
 
 	case "setup":
@@ -48,19 +57,21 @@ switch (subcommand) {
 		break;
 
 	case "build":
-		await runBuilder(args);
+		await runBuilder(flags.dir ?? resolveHome(".polka/pod/"));
 		break;
 
 	default:
-		console.log("usage: polka <subcommand> [args]");
+		console.log("usage: polka <subcommand> [options]");
 		console.log("");
 		console.log("subcommands:");
-		console.log("  relay [port]            start relay server");
-		console.log("  space [port]            start space server");
-		console.log("  pod [port] [docs-root]  start pod server");
-		console.log("  voice [port]            start voice client");
-		console.log("  browser [port]          start browser");
-		console.log("  setup                    generate keypairs");
-		console.log("  build [docs-dir]        build and sign documents");
+		console.log("  relay   [--port <port>]              start relay server");
+		console.log("  space   [--port <port>]              start space server");
+		console.log("  pod     [--port <port>] [--dir <dir>] start pod server");
+		console.log("  voice   [--port <port>]              start voice client");
+		console.log("  browser [--port <port>]              start browser");
+		console.log("  setup                                generate keypairs");
+		console.log(
+			"  build   [--dir <dir>]                build and sign documents",
+		);
 		break;
 }

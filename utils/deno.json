@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"imports": {
 		"@dicebear/core": "npm:@dicebear/core@^9.4.2",
-		"@dicebear/pixel-art": "npm:@dicebear/pixel-art@^9.4.2",
+		"@dicebear/bottts": "npm:@dicebear/bottts@^9.4.2",
 		"@noble/ciphers": "jsr:@noble/ciphers@^2.2.0",
 		"@noble/curves": "jsr:@noble/curves@^2.2.0",
 		"@noble/hashes": "jsr:@noble/hashes@^2.2.0"

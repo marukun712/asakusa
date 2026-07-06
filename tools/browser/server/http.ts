@@ -7,7 +7,7 @@ import {
 	generateAvatar,
 } from "@polka/utils/crypto/fingerprint.ts";
 import { buildMerkleRoot } from "../../merkle/tree.ts";
-import { fetchPolka, fetchPolkaBytes } from "./polka.ts";
+import { fetchPolka } from "./polka.ts";
 
 const PUBLIC_DIR = new URL("../public/", import.meta.url).pathname;
 
@@ -95,24 +95,20 @@ async function handleVerify(params: URLSearchParams): Promise<Response> {
 		const signedAt = new Date(parseInt(tsStr, 10)).toISOString();
 
 		const manifestUrl = `polka://${host}:${port}/.well-known/polka/manifest`;
-		const manifest = await fetchPolkaBytes(host, port, manifestUrl);
+		const manifest = await fetchPolka(host, port, manifestUrl);
 		if (manifest.status !== 20) throw new Error("manifest not found");
 
-		const paths = new TextDecoder()
-			.decode(manifest.body)
-			.trim()
-			.split("\n")
-			.filter(Boolean);
+		const paths = manifest.body.trim().split("\n").filter(Boolean);
 
 		const hashes: Uint8Array[] = [];
 		for (const path of paths) {
-			const file = await fetchPolkaBytes(
+			const file = await fetchPolka(
 				host,
 				port,
 				`polka://${host}:${port}${path}`,
 			);
 			if (file.status !== 20) throw new Error(`failed to fetch ${path}`);
-			hashes.push(sha256(file.body));
+			hashes.push(sha256(new TextEncoder().encode(file.body)));
 		}
 		const computedRoot = buildMerkleRoot(hashes);
 		const contentValid = bytesToHex(computedRoot) === hashHex;

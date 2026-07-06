@@ -11,9 +11,8 @@
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/streams@*": "1.1.1",
     "npm:@biomejs/biome@^2.5.2": "2.5.2",
+    "npm:@dicebear/bottts@^9.4.2": "9.4.2_@dicebear+core@9.4.2",
     "npm:@dicebear/core@^9.4.2": "9.4.2",
-    "npm:@dicebear/pixel-art@*": "9.4.2_@dicebear+core@9.4.2",
-    "npm:@dicebear/pixel-art@^9.4.2": "9.4.2_@dicebear+core@9.4.2",
     "npm:@noble/curves@*": "2.0.1",
     "npm:@noble/hashes@*": "2.0.1",
     "npm:age-encryption@0.3": "0.3.0",
@@ -117,16 +116,16 @@
       "os": ["win32"],
       "cpu": ["x64"]
     },
+    "@dicebear/bottts@9.4.2_@dicebear+core@9.4.2": {
+      "integrity": "sha512-tsx+dII7EFUCVA8URj66G1GqORCCVduCAx4dY2prEY2IeFianVpkntXuFsWZ9BBGx1NZFndvDith5oTwKMQPbQ==",
+      "dependencies": [
+        "@dicebear/core"
+      ]
+    },
     "@dicebear/core@9.4.2": {
       "integrity": "sha512-MF0042+Z3s8PGZKZLySfhft28bUa3B1iq0e5NSjCvY8gfMi5aIH/iRJGRJa1N9Jz1BNkxYb4yvJ/N9KO8Z6Y+w==",
       "dependencies": [
         "@types/json-schema"
-      ]
-    },
-    "@dicebear/pixel-art@9.4.2_@dicebear+core@9.4.2": {
-      "integrity": "sha512-peHf7oKICDgBZ8dUyj+txPnS7VZEWgvKE+xW4mNQqBt6dYZIjmva2shOVHn0b1JU+FDxMx3uIkWVixKdUq4WGg==",
-      "dependencies": [
-        "@dicebear/core"
       ]
     },
     "@noble/ciphers@2.2.0": {
@@ -253,6 +252,9 @@
       "integrity": "sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A=="
     }
   },
+  "redirects": {
+    "https://esm.sh/dioscuri": "https://esm.sh/dioscuri@2.0.0"
+  },
   "remote": {
     "https://deno.land/x/crayon@3.3.3/mod.ts": "82ad225583a483c4837577971629cddaa22614093af8353da6426b9366de9780",
     "https://deno.land/x/crayon@3.3.3/src/conversions.ts": "9bfd3b1fbe412bcba092890ac558b6beaad4c3aa399cd99d45fadb324d28afd6",
@@ -313,7 +315,8 @@
     "https://deno.land/x/tui@2.1.11/src/utils/signals.ts": "a78893aa2e379468df65045a4d1f45e0111237b24e18c19bf5a92b6ee9074c4a",
     "https://deno.land/x/tui@2.1.11/src/utils/sorted_array.ts": "d7b55e9c6489102fbee46d632040449f960f2ed3ae0d6bc3326e6d6ec1450d97",
     "https://deno.land/x/tui@2.1.11/src/utils/strings.ts": "0f7d24072e3d2ed4993f0f2692f148b0af4d9b7a665193dec835101af4dabf7b",
-    "https://deno.land/x/tui@2.1.11/src/view.ts": "77c9dfdb3632f95c2456036c5e30f90cfbbad62cbb4f370cba48b992523aa619"
+    "https://deno.land/x/tui@2.1.11/src/view.ts": "77c9dfdb3632f95c2456036c5e30f90cfbbad62cbb4f370cba48b992523aa619",
+    "https://esm.sh/dioscuri@2.0.0": "172671a340715c2499875c43e46fa4fb8e3d9bac881588bf59ccabec2ee81d7c"
   },
   "workspace": {
     "dependencies": [
@@ -357,8 +360,8 @@
           "jsr:@noble/ciphers@^2.2.0",
           "jsr:@noble/curves@^2.2.0",
           "jsr:@noble/hashes@^2.2.0",
-          "npm:@dicebear/core@^9.4.2",
-          "npm:@dicebear/pixel-art@^9.4.2"
+          "npm:@dicebear/bottts@^9.4.2",
+          "npm:@dicebear/core@^9.4.2"
         ]
       }
     }
