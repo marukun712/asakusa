@@ -5,43 +5,219 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Polka Browser</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      background: #dee1e6;
+      color: #202124;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .browser-chrome {
+      background: #dee1e6;
+      flex-shrink: 0;
+    }
+
+    .tab-bar {
+      display: flex;
+      align-items: flex-end;
+      padding: 8px 8px 0;
+      gap: 1px;
+    }
+
+    .tab {
+      display: flex;
+      align-items: center;
+      padding: 8px 20px;
+      background: #c2c7d0;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 13px;
+      color: #5f6368;
+      border: none;
+      min-width: 120px;
+    }
+
+    .tab.active {
+      background: #f1f3f4;
+      color: #202124;
+    }
+
+    .toolbar {
+      background: #f1f3f4;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .address-bar-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-radius: 24px;
+      border: 1px solid transparent;
+      padding: 0 12px;
+      height: 36px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .address-bar-wrap:focus-within {
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+    }
+
+    .address-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #202124;
+      background: transparent;
+    }
+
+    .go-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: #5f6368;
+      padding: 4px 6px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .go-btn:hover {
+      color: #1a73e8;
+    }
+
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      color: #5f6368;
+      flex-shrink: 0;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: #e0e0e0;
+    }
+
+    .nav-btn:disabled {
+      color: #bdc1c6;
+      cursor: default;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .status-text {
+      font-size: 12px;
+      color: #5f6368;
+      margin-bottom: 12px;
+      font-family: monospace;
+    }
+
+    .verify-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .verify-row input {
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .verify-row input:focus {
+      border-color: #1a73e8;
+    }
+
+    #verify-host {
+      flex: 2;
+    }
+
+    #verify-port {
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: #1a73e8;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      background: #1557b0;
+    }
+
+    pre.result {
+      background: #f8f9fa;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      padding: 12px;
+      font-size: 13px;
+    }
+  </style>
 </head>
 
 <body>
-  <header class="container">
-    <nav>
-      <ul>
-        <li><button type="button" id="tab-browse" aria-current="page">Browse</button></li>
-        <li><button type="button" id="tab-verify">Verify</button></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main class="container">
-    <section id="section-browse">
-      <form id="browse-form">
-        <div>
-          <input type="text" id="browse-url" placeholder="polka://hostname:8180/path">
-          <button type="submit">Go</button>
+  <div class="browser-chrome">
+    <div class="tab-bar">
+      <button class="tab active" id="tab-browse" type="button">Browse</button>
+      <button class="tab" id="tab-verify" type="button">Verify</button>
+    </div>
+    <div class="toolbar">
+      <button class="nav-btn" id="btn-back" type="button" disabled>&lt;</button>
+      <button class="nav-btn" id="btn-forward" type="button" disabled>&gt;</button>
+      <form id="browse-form" style="flex:1;display:flex;align-items:center;">
+        <div class="address-bar-wrap">
+          <input class="address-input" type="text" id="browse-url" placeholder="polka://hostname:8180/path">
+          <button class="go-btn" type="submit">&#8250;</button>
         </div>
       </form>
-      <small id="browse-status" style="display:none"></small>
-      <article id="browse-content" style="display:none;margin-top:1rem"></article>
-    </section>
+    </div>
+  </div>
 
-    <section id="section-verify" hidden>
+  <div class="browser-content">
+    <div id="section-browse" class="panel active">
+      <div id="browse-status" class="status-text" style="display:none"></div>
+      <div id="browse-content" style="display:none"></div>
+    </div>
+
+    <div id="section-verify" class="panel">
       <form id="verify-form">
-        <div>
+        <div class="verify-row">
           <input type="text" id="verify-host" placeholder="hostname">
           <input type="number" id="verify-port" placeholder="8180">
-          <button type="submit">Verify</button>
+          <button class="btn-primary" type="submit">Verify</button>
         </div>
       </form>
-      <div id="verify-avatar" hidden style="margin-top:1rem"></div>
-      <pre id="verify-result" style="display:none"></pre>
-    </section>
-  </main>
+      <div id="verify-avatar" hidden></div>
+      <pre id="verify-result" class="result" style="display:none"></pre>
+    </div>
+  </div>
 
   <script type="module" src="./js/main.js"></script>
 </body>

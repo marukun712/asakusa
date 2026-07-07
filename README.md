@@ -8,12 +8,28 @@ Static Part(文書ネットワーク)と Dynamic Part(音声空間)の2層で構
 
 ## セットアップ
 
-### 1. 鍵ペアの生成
+### 1. ビルド
+
+```sh
+deno task build:cli
+```
+
+`dist/polka` バイナリが生成されます。
+
+ブラウザクライアントをビルドする場合:
+
+```sh
+deno task build:browser
+```
+
+`dist/polka-browser` が生成されます。
+
+### 2. 鍵ペアの生成
 
 初回のみ実行します。X25519(トランスポート用)と Ed25519(コンテンツ署名用)の鍵ペアを `~/.polka/` 以下に生成します。
 
 ```sh
-deno task setup
+polka setup
 ```
 
 コンテンツ鍵のパスフレーズを対話形式で入力します。
@@ -22,42 +38,22 @@ deno task setup
 
 ## コマンド一覧
 
-### サーバー
+`polka <subcommand> [options]` で実行します。
 
-| コマンド | 説明 |
+| サブコマンド | 説明 |
 |---|---|
-| `deno task pod` | Document Server を起動する。`DOCS_ROOT` のファイルを Noise NX で暗号化した TCP で配信します。 |
-| `deno task relay` | Relay Server を起動する。Pod からの文書追加/更新イベントを UDP でブロードキャストします。 |
-| `deno task space` | Voice Space Server を起動する。参加者の Opus 音声パケットを UDP でブロードキャストします。 |
-
-### クライアント / ツール
-
-| コマンド | 説明 |
-|---|---|
-| `deno task browser` | ブラウザクライアントを起動する。`http://localhost:8183` で Pod のブラウズとコンテンツ検証が行えます。 |
-| `deno task voice` | 音声クライアントを起動する。Space Server に接続して音声を送受信します。 |
-| `deno task build` | ドキュメントをビルドする。Markdown を Gemtext に変換し、Merkle Tree を構築してコンテンツ鍵で署名します。`.well-known/polka/token` と `.well-known/polka/manifest` を出力します。 |
-| `deno task setup` | 鍵ペアを生成する。初回のみ実行します。 |
-
-### バイナリ (polka) のサブコマンド
-
-ビルド済みバイナリを使う場合は `polka <subcommand> [args]` で実行します。
-
-```
-polka relay [port]            relay server を起動する
-polka space [port]            space server を起動する
-polka pod [port] [docs-root]  pod server を起動する
-polka voice [port]            音声クライアントを起動する
-polka browser [port]          ブラウザクライアントを起動する
-polka setup                   鍵ペアを生成する
-polka build [docs-dir]        ドキュメントをビルドして署名する
-```
+| `relay [--port <port>]` | Relay Server を起動する。Pod からの文書追加/更新イベントを UDP でブロードキャストします。デフォルトポート: 8181 |
+| `space [--port <port>]` | Voice Space Server を起動する。参加者の Opus 音声パケットを UDP でブロードキャストします。デフォルトポート: 8182 |
+| `pod [--port <port>] [--dir <dir>]` | Document Server を起動する。`--dir` のファイルを Noise NX で暗号化した TCP で配信します。デフォルトポート: 8180、デフォルトディレクトリ: `~/.polka/pod/` |
+| `voice [--port <port>]` | 音声クライアントを起動する。ブラウザから `http://localhost:8183` でアクセスします。デフォルトポート: 8183 |
+| `build [--dir <dir>]` | ドキュメントをビルドする。Markdown を Gemtext に変換し、Merkle Tree を構築してコンテンツ鍵で署名します。`.well-known/polka/token` と `.well-known/polka/manifest` を出力します。デフォルトディレクトリ: `~/.polka/pod/` |
+| `setup` | 鍵ペアを生成する。初回のみ実行します。 |
 
 ---
 
 ## 鍵ファイルの場所
 
-`deno task setup` によって以下のパスに生成されます。
+`polka setup` によって以下のパスに生成されます。
 
 ```
 ~/.polka/

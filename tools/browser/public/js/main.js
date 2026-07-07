@@ -1,6 +1,3 @@
-// https://github.com/wooorm/dioscuri
-import { buffer } from "https://esm.sh/dioscuri";
-
 const tabBrowse = document.getElementById("tab-browse");
 const tabVerify = document.getElementById("tab-verify");
 const sectionBrowse = document.getElementById("section-browse");
@@ -8,25 +5,41 @@ const sectionVerify = document.getElementById("section-verify");
 
 tabBrowse.addEventListener("click", (e) => {
 	e.preventDefault();
-	tabBrowse.setAttribute("aria-current", "page");
-	tabVerify.removeAttribute("aria-current");
-	sectionBrowse.hidden = false;
-	sectionVerify.hidden = true;
+	tabBrowse.classList.add("active");
+	tabVerify.classList.remove("active");
+	sectionBrowse.classList.add("active");
+	sectionVerify.classList.remove("active");
 });
 
 tabVerify.addEventListener("click", (e) => {
 	e.preventDefault();
-	tabVerify.setAttribute("aria-current", "page");
-	tabBrowse.removeAttribute("aria-current");
-	sectionVerify.hidden = false;
-	sectionBrowse.hidden = true;
+	tabVerify.classList.add("active");
+	tabBrowse.classList.remove("active");
+	sectionVerify.classList.add("active");
+	sectionBrowse.classList.remove("active");
 });
 
 const browseStatus = document.getElementById("browse-status");
 const browseContent = document.getElementById("browse-content");
 const browseUrlInput = document.getElementById("browse-url");
+const btnBack = document.getElementById("btn-back");
+const btnForward = document.getElementById("btn-forward");
 
-async function fetchAndRender(url) {
+const navHistory = [];
+let navIndex = -1;
+
+function updateNavButtons() {
+	btnBack.disabled = navIndex <= 0;
+	btnForward.disabled = navIndex >= navHistory.length - 1;
+}
+
+async function fetchAndRender(url, push = true) {
+	if (push) {
+		navHistory.splice(navIndex + 1);
+		navHistory.push(url);
+		navIndex = navHistory.length - 1;
+	}
+	updateNavButtons();
 	browseUrlInput.value = url;
 	browseStatus.textContent = "Loading...";
 	browseStatus.style.display = "";
@@ -61,12 +74,75 @@ async function fetchAndRender(url) {
 	browseContent.style.display = "";
 }
 
+// https://geminiprotocol.net/docs/gemtext-specification.gmi
 function parseGmi(text) {
-	const html = buffer(text);
 	const div = document.createElement("div");
-	div.innerHTML = html;
+	const lines = text.split("\n");
+	let preformatted = false;
+	let pre = null;
+
+	for (const line of lines) {
+		if (line.startsWith("```")) {
+			if (!preformatted) {
+				pre = document.createElement("pre");
+				div.appendChild(pre);
+				preformatted = true;
+			} else {
+				preformatted = false;
+				pre = null;
+			}
+			continue;
+		}
+
+		if (preformatted) {
+			pre.textContent += `${line}\n`;
+			continue;
+		}
+
+		if (line.startsWith("###")) {
+			const h = document.createElement("h3");
+			h.textContent = line.slice(3).trim();
+			div.appendChild(h);
+		} else if (line.startsWith("##")) {
+			const h = document.createElement("h2");
+			h.textContent = line.slice(2).trim();
+			div.appendChild(h);
+		} else if (line.startsWith("#")) {
+			const h = document.createElement("h1");
+			h.textContent = line.slice(1).trim();
+			div.appendChild(h);
+		} else if (line.startsWith("* ")) {
+			const prevUl = div.lastChild?.tagName === "UL" ? div.lastChild : null;
+			const list = prevUl ?? document.createElement("ul");
+			if (!prevUl) div.appendChild(list);
+			const li = document.createElement("li");
+			li.textContent = line.slice(2);
+			list.appendChild(li);
+		} else if (line.startsWith(">")) {
+			const bq = document.createElement("blockquote");
+			bq.textContent = line.slice(1).trim();
+			div.appendChild(bq);
+		} else {
+			const p = document.createElement("p");
+			p.textContent = line;
+			div.appendChild(p);
+		}
+	}
+
 	return div;
 }
+
+btnBack.addEventListener("click", () => {
+	if (navIndex <= 0) return;
+	navIndex--;
+	fetchAndRender(navHistory[navIndex], false);
+});
+
+btnForward.addEventListener("click", () => {
+	if (navIndex >= navHistory.length - 1) return;
+	navIndex++;
+	fetchAndRender(navHistory[navIndex], false);
+});
 
 browseContent.addEventListener("click", (e) => {
 	const a = e.target.closest("a");
@@ -83,6 +159,10 @@ document.getElementById("browse-form").addEventListener("submit", (e) => {
 	e.preventDefault();
 	const url = browseUrlInput.value.trim();
 	if (!url) return;
+	tabBrowse.classList.add("active");
+	tabVerify.classList.remove("active");
+	sectionBrowse.classList.add("active");
+	sectionVerify.classList.remove("active");
 	fetchAndRender(url);
 });
 

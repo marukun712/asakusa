@@ -8,7 +8,6 @@ import { parseArgs } from "@std/cli/parse-args";
 import { startServer as startPod } from "./server/pod/server/tcp.ts";
 import { startServer as startRelay } from "./server/relay/server/udp.ts";
 import { startServer as startSpace } from "./server/space/server/udp.ts";
-import { startServer as startBrowser } from "./tools/browser/server/http.ts";
 import { run as runBuilder } from "./tools/builder.ts";
 import { run as runSetup } from "./tools/setup.ts";
 import { startServer as startVoice } from "./tools/voice-client/server/http.ts";
@@ -48,10 +47,6 @@ switch (subcommand) {
 		startVoice(parseInt(flags.port ?? String(BROWSER_PORT), 10));
 		break;
 
-	case "browser":
-		startBrowser(parseInt(flags.port ?? String(BROWSER_PORT), 10));
-		break;
-
 	case "setup":
 		await runSetup();
 		break;
@@ -68,7 +63,6 @@ switch (subcommand) {
 		console.log("  space   [--port <port>]              start space server");
 		console.log("  pod     [--port <port>] [--dir <dir>] start pod server");
 		console.log("  voice   [--port <port>]              start voice client");
-		console.log("  browser [--port <port>]              start browser");
 		console.log("  setup                                generate keypairs");
 		console.log(
 			"  build   [--dir <dir>]                build and sign documents",

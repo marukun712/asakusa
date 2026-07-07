@@ -1,12 +1,7 @@
 {
 	"tasks": {
-		"relay": "deno run --allow-net --allow-env --unstable-net main.ts relay",
-		"space": "deno run --allow-net --allow-env --unstable-net main.ts space",
-		"pod": "deno run --allow-net --allow-read --allow-env main.ts pod",
-		"voice": "deno run --allow-net --allow-read --allow-env --unstable-net main.ts voice",
-		"browser": "deno run --allow-net --allow-read --allow-env main.ts browser",
-		"setup": "deno run --allow-read --allow-write --allow-env main.ts setup",
-		"build": "deno run --allow-read --allow-write --allow-env main.ts build"
+		"build:cli": "deno compile --allow-net --allow-read --allow-write --allow-env --unstable-net --output dist/polka main.ts",
+		"build:browser": "deno desktop --allow-net --allow-read --allow-env --output dist/polka-browser --include tools/browser/public tools/browser/mod.ts"
 	},
 	"workspace": [
 		"types",

@@ -127,12 +127,11 @@ async function handleVerify(params: URLSearchParams): Promise<Response> {
 	}
 }
 
-export function startServer(port: number): void {
-	Deno.serve({ port, hostname: "localhost" }, (req) => {
+export function startServer(): void {
+	Deno.serve((req) => {
 		const { pathname, searchParams } = new URL(req.url);
 		if (pathname === "/api/browse") return handleBrowse(searchParams);
 		if (pathname === "/api/verify") return handleVerify(searchParams);
 		return serveStatic(pathname);
 	});
-	console.log(`Polka browser running at http://localhost:${port}`);
 }
