@@ -22,11 +22,12 @@ jobs:
         run: |
           deno task build:cli
           deno task build:browser
+          zip -r dist/polka-browser.zip dist/polka-browser/
 
       - name: upload release assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/polka
-            dist/polka-browser
+            dist/polka-browser.zip
 
