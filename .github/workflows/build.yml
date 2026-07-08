@@ -7,9 +7,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cli-output: dist/polka-linux
+            browser-output: dist/polka-browser-linux.AppImage
+          - os: macos-latest
+            cli-output: dist/polka-macos
+            browser-output: dist/polka-browser-macos.dmg
+          - os: windows-latest
+            cli-output: dist/polka-windows.exe
+            browser-output: dist/polka-browser-windows.msi
 
     steps:
       - uses: actions/checkout@v4
@@ -18,16 +30,15 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: compile
-        run: |
-          deno task build:cli
-          deno task build:browser
-          zip -r dist/polka-browser.zip dist/polka-browser/
+      - name: compile CLI
+        run: deno compile --allow-net --allow-read --allow-write --allow-env --unstable-net --output ${{ matrix.cli-output }} main.ts
+
+      - name: compile browser
+        run: deno desktop --allow-net --allow-read --allow-env --output ${{ matrix.browser-output }} --include tools/browser/public tools/browser/mod.ts
 
       - name: upload release assets
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/polka
-            dist/polka-browser.zip
-
+            ${{ matrix.cli-output }}
+            ${{ matrix.browser-output }}
