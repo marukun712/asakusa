@@ -20,11 +20,13 @@ jobs:
 
       - name: compile
         run: |
-          deno compile --allow-net --allow-read --allow-write --allow-env --unstable-net \
-            --output dist/polka main.ts
+          deno task build:cli
+          deno task build:browser
 
       - name: upload release assets
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/polka
+          files: |
+            dist/polka
+            dist/polka-browser
 
